@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { supabase } from "./lib/supabase"
 
-// ✅ MAIN APP (AUTH ONLY)
+// ================= APP (AUTH) =================
 export default function App() {
   const [session, setSession] = useState(null)
   const [email, setEmail] = useState("")
@@ -21,21 +21,24 @@ export default function App() {
 
   if (!session) {
     return (
-      <div style={{ padding: 50 }}>
-        <h2>Admin Login</h2>
+      <div style={styles.loginContainer}>
+        <h2 style={{ color: "gold" }}>Admin Login</h2>
 
         <input
+          style={styles.input}
           placeholder="Email"
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
+          style={styles.input}
           type="password"
           placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
         />
 
         <button
+          style={styles.btn}
           onClick={() =>
             supabase.auth.signInWithPassword({ email, password })
           }
@@ -49,11 +52,12 @@ export default function App() {
   return <Dashboard />
 }
 
-// ✅ DASHBOARD (SEPARATE COMPONENT)
+// ================= DASHBOARD =================
 function Dashboard() {
   const [books, setBooks] = useState([])
   const [form, setForm] = useState({})
   const [editingId, setEditingId] = useState(null)
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => {
     fetchBooks()
@@ -87,21 +91,33 @@ function Dashboard() {
     const file = e.target.files[0]
     if (!file) return
 
+    setUploading(true)
+
     const preview = URL.createObjectURL(file)
     setForm(prev => ({ ...prev, [`${field}_preview`]: preview }))
 
     const url = await uploadFile(file, bucket)
+
     if (url) {
       setForm(prev => ({ ...prev, [field]: url }))
     }
+
+    setUploading(false)
   }
 
   const saveBook = async () => {
+    const cleanForm = { ...form }
+
+    delete cleanForm.poster_url_preview
+    delete cleanForm.logo_url_preview
+
     if (editingId) {
-      await supabase.from("books").update(form).eq("id", editingId)
+      await supabase.from("books").update(cleanForm).eq("id", editingId)
     } else {
-      await supabase.from("books").insert([form])
+      await supabase.from("books").insert([cleanForm])
     }
+
+    alert("Saved successfully ✅")
 
     setForm({})
     setEditingId(null)
@@ -109,7 +125,11 @@ function Dashboard() {
   }
 
   const editBook = (b) => {
-    setForm(b)
+    setForm({
+      ...b,
+      poster_url_preview: b.poster_url,
+      logo_url_preview: b.logo_url
+    })
     setEditingId(b.id)
   }
 
@@ -119,45 +139,50 @@ function Dashboard() {
   }
 
   return (
-    <div className="container">
+    <div style={styles.container}>
 
-      <h1 style={{ color: "gold" }}>Admin Dashboard</h1>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <h1 style={{ color: "gold" }}>Admin Dashboard</h1>
 
-      {/* FORM CARD */}
-      <div className="card">
+        <button
+          style={{ ...styles.btn, background: "#333" }}
+          onClick={() => supabase.auth.signOut()}
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* FORM */}
+      <div style={styles.card}>
         <h3>{editingId ? "Edit Book" : "Add Book"}</h3>
 
-        <input className="input" name="title" placeholder="Title" onChange={handleChange} value={form.title || ""} />
-        <input className="input" name="genre" placeholder="Genre" onChange={handleChange} value={form.genre || ""} />
-        <input className="input" name="trailer_url" placeholder="Trailer URL" onChange={handleChange} value={form.trailer_url || ""} />
-        <input className="input" name="buy_color" placeholder="Buy Color Link" onChange={handleChange} value={form.buy_color || ""} />
-        <input className="input" name="buy_bw" placeholder="Buy B&W Link" onChange={handleChange} value={form.buy_bw || ""} />
+        <input style={styles.input} name="title" placeholder="Title" onChange={handleChange} value={form.title || ""} />
+        <input style={styles.input} name="genre" placeholder="Genre" onChange={handleChange} value={form.genre || ""} />
+        <input style={styles.input} name="trailer_url" placeholder="Trailer URL" onChange={handleChange} value={form.trailer_url || ""} />
+        <input style={styles.input} name="buy_color" placeholder="Buy Color Link" onChange={handleChange} value={form.buy_color || ""} />
+        <input style={styles.input} name="buy_bw" placeholder="Buy B&W Link" onChange={handleChange} value={form.buy_bw || ""} />
 
-        <textarea className="input" name="description" placeholder="Description" onChange={handleChange} value={form.description || ""} />
+        <textarea style={styles.input} name="description" placeholder="Description" onChange={handleChange} value={form.description || ""} />
+
+        {uploading && <p style={{ color: "gold" }}>Uploading...</p>}
 
         {/* POSTER */}
         <p>Poster</p>
         <input type="file" onChange={(e) => handleFile(e, "poster_url", "posters")} />
         {(form.poster_url_preview || form.poster_url) && (
-          <img
-            src={form.poster_url_preview || form.poster_url}
-            className="preview"
-          />
+          <img src={form.poster_url_preview || form.poster_url} style={styles.preview} />
         )}
 
         {/* LOGO */}
         <p>Logo</p>
         <input type="file" onChange={(e) => handleFile(e, "logo_url", "logos")} />
         {(form.logo_url_preview || form.logo_url) && (
-          <img
-            src={form.logo_url_preview || form.logo_url}
-            className="preview"
-          />
+          <img src={form.logo_url_preview || form.logo_url} style={styles.preview} />
         )}
 
-        {/* CAST */}
+        {/* CAST JSON */}
         <textarea
-          className="input"
+          style={styles.input}
           placeholder="Cast JSON"
           onChange={(e) => {
             try {
@@ -169,29 +194,28 @@ function Dashboard() {
           value={JSON.stringify(form.cast || [])}
         />
 
-        <button className="btn" onClick={saveBook}>
+        <button style={styles.btn} onClick={saveBook}>
           {editingId ? "Update Book" : "Add Book"}
         </button>
       </div>
 
       {/* BOOK LIST */}
       {books.map((b) => (
-        <div key={b.id} className="card">
+        <div key={b.id} style={styles.card}>
           <h3>{b.title}</h3>
           <p style={{ color: "gold" }}>{b.genre}</p>
 
           <div style={{ display: "flex", gap: 10 }}>
-            <img src={b.poster_url} className="preview" />
-            <img src={b.logo_url} className="preview" />
+            <img src={b.poster_url} style={styles.preview} />
+            <img src={b.logo_url} style={styles.preview} />
           </div>
 
-          <button className="btn" onClick={() => editBook(b)}>
+          <button style={styles.btn} onClick={() => editBook(b)}>
             Edit
           </button>
 
           <button
-            className="btn"
-            style={{ background: "crimson" }}
+            style={{ ...styles.btn, background: "crimson" }}
             onClick={() => deleteBook(b.id)}
           >
             Delete
@@ -200,4 +224,53 @@ function Dashboard() {
       ))}
     </div>
   )
+}
+
+// ================= STYLES =================
+const styles = {
+  container: {
+    padding: 30,
+    maxWidth: 1100,
+    margin: "auto",
+    background: "#0a0a0a",
+    minHeight: "100vh",
+    color: "white"
+  },
+  card: {
+    background: "rgba(255,255,255,0.05)",
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 20
+  },
+  input: {
+    width: "100%",
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 8,
+    border: "none",
+    background: "#111",
+    color: "white"
+  },
+  btn: {
+    background: "linear-gradient(135deg, gold, #b8962e)",
+    border: "none",
+    padding: "10px 16px",
+    marginTop: 15,
+    marginRight: 10,
+    borderRadius: 10,
+    cursor: "pointer",
+    fontWeight: "bold"
+  },
+  preview: {
+    marginTop: 10,
+    height: 100,
+    borderRadius: 10,
+    objectFit: "cover"
+  },
+  loginContainer: {
+    padding: 50,
+    background: "#0a0a0a",
+    minHeight: "100vh",
+    color: "white"
+  }
 }
