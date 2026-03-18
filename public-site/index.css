@@ -1,0 +1,53 @@
+body {
+  margin: 0;
+  background: #0a0a0a;
+  color: white;
+  font-family: system-ui;
+  scroll-behavior: smooth;
+}
+
+.section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 80px;
+  position: relative;
+  scroll-snap-align: start;
+}
+
+html {
+  scroll-snap-type: y mandatory;
+}
+
+.overlay-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.3;
+  filter: blur(60px);
+  transform: scale(1.2);
+}
+
+.glass {
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(25px);
+  border-radius: 20px;
+  padding: 25px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn {
+  background: linear-gradient(135deg, gold, #b8962e);
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(255,215,0,0.5);
+}
