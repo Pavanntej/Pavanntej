@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { supabase } from "./lib/supabase"
-import { FastAverageColor } from "fast-average-color"
+import { motion } from "framer-motion"
+import "./index.css"
 
 export default function App() {
   const [books, setBooks] = useState([])
-  const [bg, setBg] = useState("#111")
 
   useEffect(() => {
     fetchBooks()
@@ -12,92 +12,141 @@ export default function App() {
 
   const fetchBooks = async () => {
     const { data } = await supabase.from("books").select("*")
-    setBooks(data)
-  }
-
-  const changeBg = (img) => {
-    const fac = new FastAverageColor()
-    fac.getColorAsync(img).then((c) => setBg(c.hex))
+    setBooks(data || [])
   }
 
   return (
-    <div style={{ background: bg, color: "white", minHeight: "100vh" }}>
-      
-      {/* HEADER LOGOS */}
-      <div style={{ display: "flex", overflowX: "auto", padding: 10 }}>
-        {books.map((b) => (
+    <div>
+
+      {/* HEADER */}
+      <div style={{
+        display: "flex",
+        overflowX: "auto",
+        padding: 20,
+        gap: 20,
+        background: "#000"
+      }}>
+        {books.map(b => (
           <img
             key={b.id}
             src={b.logo_url}
-            style={{ height: 60, marginRight: 10, cursor: "pointer" }}
+            style={{ height: 60, cursor: "pointer" }}
             onClick={() =>
-              document.getElementById(b.id).scrollIntoView()
+              document.getElementById(b.id).scrollIntoView({ behavior: "smooth" })
             }
           />
         ))}
       </div>
 
-      {/* BOOK SECTIONS */}
-      {books.map((b) => (
-        <div
-          key={b.id}
-          id={b.id}
-          onMouseEnter={() => changeBg(b.poster_url)}
-          style={{
-            display: "flex",
-            padding: 40,
-            alignItems: "center",
-            minHeight: "100vh"
-          }}
-        >
+      {/* SECTIONS */}
+      {books.map((b, index) => (
+        <section key={b.id} id={b.id} className="section">
+
+          {/* BACKGROUND BLEND */}
+          <div
+            className="overlay-bg"
+            style={{ backgroundImage: `url(${b.poster_url})` }}
+          />
+
           {/* LEFT */}
-          <div style={{ width: "50%" }}>
-            <img src={b.logo_url} style={{ width: 200 }} />
-            <p>{b.genre}</p>
+          <motion.div
+            className="glass"
+            initial={{ opacity: 0, x: -80 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            style={{ width: "50%", zIndex: 1 }}
+          >
+            <img src={b.logo_url} style={{ width: 220 }} />
 
-            <button onClick={() => window.open(b.buy_color)}>
-              Buy Color
-            </button>
+            <p style={{ color: "gold", marginTop: 10 }}>{b.genre}</p>
 
-            <button onClick={() => window.open(b.buy_bw)}>
-              Buy B&W
-            </button>
+            <div style={{ marginTop: 20 }}>
+              <button className="btn" onClick={() => window.open(b.buy_color)}>
+                Buy Color
+              </button>
 
-            <button
-              onClick={() =>
-                navigator.share({
-                  title: b.title,
-                  url: window.location.href
-                })
-              }
-            >
-              Share
-            </button>
+              <button className="btn" onClick={() => window.open(b.buy_bw)}>
+                Buy B&W
+              </button>
 
-            <p>{b.description}</p>
+              <button
+                className="btn"
+                onClick={() =>
+                  navigator.share({
+                    title: b.title,
+                    url: window.location.href
+                  })
+                }
+              >
+                Share
+              </button>
+            </div>
+
+            <p style={{ marginTop: 20, lineHeight: 1.6 }}>
+              {b.description}
+            </p>
 
             {/* CAST */}
-            <div style={{ display: "flex", gap: 10 }}>
+            <div style={{ display: "flex", gap: 15, marginTop: 20 }}>
               {b.cast?.map((c, i) => (
-                <div key={i}>
-                  <img src={c.image} width={60} />
-                  <p>{c.name}</p>
+                <div key={i} style={{ textAlign: "center" }}>
+                  <img
+                    src={c.image}
+                    style={{
+                      width: 70,
+                      height: 70,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      border: "2px solid gold"
+                    }}
+                  />
+                  <p style={{ fontSize: 12 }}>{c.name}</p>
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* RIGHT TRAILER */}
-          <div style={{ width: "50%" }}>
+          <motion.div
+            initial={{ opacity: 0, x: 80 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            style={{
+              width: "50%",
+              display: "flex",
+              justifyContent: "center",
+              zIndex: 1
+            }}
+          >
             <iframe
-              width="300"
-              height="533"
+              width="320"
+              height="570"
               src={b.trailer_url + "?autoplay=1&mute=1"}
               allow="autoplay"
+              style={{
+                borderRadius: 20,
+                boxShadow: "0 0 40px rgba(255,215,0,0.3)"
+              }}
             />
-          </div>
-        </div>
+          </motion.div>
+        </section>
       ))}
+
+      {/* FOOTER CONTACT */}
+      <div style={{
+        padding: 40,
+        textAlign: "center",
+        background: "#000"
+      }}>
+        <h3>Contact</h3>
+
+        <a href="https://wa.me/YOUR_NUMBER" className="btn">WhatsApp</a>
+        <a href="mailto:YOUR_EMAIL" className="btn">Email</a>
+
+        <div style={{ marginTop: 20 }}>
+          <a href="#">Instagram</a> | <a href="#">YouTube</a>
+        </div>
+      </div>
     </div>
   )
 }
