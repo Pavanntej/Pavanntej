@@ -15,167 +15,186 @@ export default function App() {
   const fetchBooks = async () => {
     const { data, error } = await supabase.from("books").select("*")
 
-    if (error) {
-      console.error(error)
-      return
-    }
+    console.log("DATA:", data)
+    console.log("ERROR:", error)
 
+    if (error) return
     setBooks(data || [])
   }
 
-  // 🎨 Dynamic color
+  // 🎨 Dynamic background color
   const extractColor = (img) => {
     const fac = new FastAverageColor()
     fac.getColorAsync(img).then(c => setBg(c.hex))
   }
 
-  // 🎥 FIX YOUTUBE
+  // 🎥 Safe YouTube embed
   const getEmbed = (url) => {
-    if (!url) return ""
-    const id =
-      url.includes("youtu.be")
-        ? url.split("/").pop()
-        : url.split("v=")[1]?.split("&")[0]
+    try {
+      if (!url) return ""
+      const id =
+        url.includes("youtu.be")
+          ? url.split("/").pop()
+          : url.split("v=")[1]?.split("&")[0]
 
-    return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1`
+      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1`
+    } catch {
+      return ""
+    }
   }
 
   return (
-    <div style={{ background: bg, transition: "1s ease", minHeight: "100vh" }}>
+    <div style={{
+      minHeight: "100vh",
+      background: bg,
+      color: "white",
+      transition: "1s ease"
+    }}>
 
-      {/* HEADER */}
+      {/* HEADER (ALWAYS VISIBLE) */}
       <div style={{
         position: "fixed",
         top: 0,
         width: "100%",
         display: "flex",
+        alignItems: "center",
         gap: 20,
         padding: 15,
-        overflowX: "auto",
         backdropFilter: "blur(20px)",
-        background: "rgba(0,0,0,0.4)",
+        background: "rgba(0,0,0,0.5)",
         zIndex: 1000
       }}>
-        <h2 style={{ color: "gold", marginRight: 20 }}>Bookshelf</h2>
+        <h2 style={{ color: "gold" }}>Bookshelf</h2>
 
         {books.map(b => (
           <img
             key={b.id}
             src={b.logo_url}
-            style={{ height: 50, cursor: "pointer" }}
+            style={{ height: 40, cursor: "pointer" }}
             onClick={() =>
               document.getElementById(b.id)
-                .scrollIntoView({ behavior: "smooth" })
+                ?.scrollIntoView({ behavior: "smooth" })
             }
           />
         ))}
       </div>
 
-      {/* EMPTY STATE */}
-      {!books.length && (
-        <div style={{ paddingTop: 120, textAlign: "center" }}>
-          <h2>No books found</h2>
-          <p>Add from admin dashboard</p>
-        </div>
-      )}
+      {/* MAIN CONTENT */}
+      <div style={{ paddingTop: 100 }}>
 
-      {/* SECTIONS */}
-      {books.map((b) => (
-        <section
-          key={b.id}
-          id={b.id}
-          className="section"
-          onMouseEnter={() => extractColor(b.poster_url)}
-        >
-
-          {/* BACKGROUND BLEND */}
-          <motion.div
-            className="overlay-bg"
-            style={{ backgroundImage: `url(${b.poster_url})` }}
-            initial={{ scale: 1.3 }}
-            whileInView={{ scale: 1.1 }}
-            transition={{ duration: 1 }}
-          />
-
-          {/* DARK GRADIENT OVERLAY */}
+        {/* EMPTY STATE */}
+        {!books.length && (
           <div style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.4))",
-            zIndex: 1
-          }} />
+            padding: 80,
+            textAlign: "center"
+          }}>
+            <h1 style={{ color: "gold" }}>Welcome to Bookshelf</h1>
+            <p>No books available yet</p>
+            <p>Add books from admin dashboard</p>
+          </div>
+        )}
 
-          {/* LEFT */}
-          <motion.div
-            className="glass"
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            style={{ width: "45%", zIndex: 2 }}
+        {/* BOOK SECTIONS */}
+        {books.map((b) => (
+          <section
+            key={b.id}
+            id={b.id}
+            className="section"
+            onMouseEnter={() => extractColor(b.poster_url)}
           >
-            <img src={b.logo_url} style={{ width: 240 }} />
 
-            <p style={{ color: "gold" }}>{b.genre}</p>
-
-            <div style={{ marginTop: 15 }}>
-              <button className="btn" onClick={() => window.open(b.buy_color)}>
-                Color
-              </button>
-              <button className="btn" onClick={() => window.open(b.buy_bw)}>
-                B&W
-              </button>
-            </div>
-
-            <p style={{ marginTop: 20 }}>{b.description}</p>
-
-            {/* CAST */}
-            <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
-              {b.cast?.map((c, i) => (
-                <motion.div key={i} whileHover={{ scale: 1.1 }}>
-                  <img
-                    src={c.image}
-                    style={{
-                      width: 65,
-                      height: 65,
-                      borderRadius: "50%",
-                      border: "2px solid gold"
-                    }}
-                  />
-                  <p style={{ fontSize: 12 }}>{c.name}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* TRAILER */}
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            style={{
-              width: "55%",
-              display: "flex",
-              justifyContent: "center",
-              zIndex: 2
-            }}
-          >
-            <motion.iframe
-              whileHover={{ scale: 1.05 }}
-              width="320"
-              height="570"
-              src={getEmbed(b.trailer_url)}
-              allow="autoplay"
-              style={{
-                borderRadius: 20,
-                boxShadow: `0 0 60px ${bg}`
-              }}
+            {/* BACKGROUND BLEND */}
+            <motion.div
+              className="overlay-bg"
+              style={{ backgroundImage: `url(${b.poster_url})` }}
+              initial={{ scale: 1.3 }}
+              whileInView={{ scale: 1.1 }}
+              transition={{ duration: 1 }}
             />
-          </motion.div>
-        </section>
-      ))}
 
-      {/* FOOTER */}
+            {/* GRADIENT OVERLAY */}
+            <div style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.4))",
+              zIndex: 1
+            }} />
+
+            {/* LEFT */}
+            <motion.div
+              className="glass"
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              style={{ width: "45%", zIndex: 2 }}
+            >
+              <img src={b.logo_url} style={{ width: 240 }} />
+
+              <p style={{ color: "gold" }}>{b.genre}</p>
+
+              <div style={{ marginTop: 15 }}>
+                <button className="btn" onClick={() => window.open(b.buy_color)}>
+                  Buy Color
+                </button>
+                <button className="btn" onClick={() => window.open(b.buy_bw)}>
+                  Buy B&W
+                </button>
+              </div>
+
+              <p style={{ marginTop: 20 }}>{b.description}</p>
+
+              {/* CAST */}
+              <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
+                {b.cast?.map((c, i) => (
+                  <motion.div key={i} whileHover={{ scale: 1.1 }}>
+                    <img
+                      src={c.image}
+                      style={{
+                        width: 65,
+                        height: 65,
+                        borderRadius: "50%",
+                        border: "2px solid gold"
+                      }}
+                    />
+                    <p style={{ fontSize: 12 }}>{c.name}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* TRAILER */}
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              style={{
+                width: "55%",
+                display: "flex",
+                justifyContent: "center",
+                zIndex: 2
+              }}
+            >
+              {b.trailer_url && (
+                <motion.iframe
+                  whileHover={{ scale: 1.05 }}
+                  width="320"
+                  height="570"
+                  src={getEmbed(b.trailer_url)}
+                  allow="autoplay"
+                  style={{
+                    borderRadius: 20,
+                    boxShadow: `0 0 60px ${bg}`
+                  }}
+                />
+              )}
+            </motion.div>
+          </section>
+        ))}
+
+      </div>
+
+      {/* FOOTER (ALWAYS VISIBLE) */}
       <div style={{
         padding: 50,
         textAlign: "center",
@@ -193,6 +212,7 @@ export default function App() {
           <a href="https://www.youtube.com/@pavanntej"> YouTube</a>
         </div>
       </div>
+
     </div>
   )
 }
