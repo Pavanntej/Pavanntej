@@ -87,9 +87,12 @@ function Dashboard() {
     const file = e.target.files[0]
     if (!file) return
 
+    const preview = URL.createObjectURL(file)
+    setForm(prev => ({ ...prev, [`${field}_preview`]: preview }))
+
     const url = await uploadFile(file, bucket)
     if (url) {
-      setForm((prev) => ({ ...prev, [field]: url }))
+      setForm(prev => ({ ...prev, [field]: url }))
     }
   }
 
@@ -116,48 +119,83 @@ function Dashboard() {
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Dashboard</h2>
+    <div className="container">
 
-      {/* INPUTS */}
-      <input name="title" placeholder="Title" onChange={handleChange} value={form.title || ""} />
-      <input name="genre" placeholder="Genre" onChange={handleChange} value={form.genre || ""} />
-      <input name="trailer_url" placeholder="Trailer URL" onChange={handleChange} value={form.trailer_url || ""} />
-      <input name="buy_color" placeholder="Buy Color Link" onChange={handleChange} value={form.buy_color || ""} />
-      <input name="buy_bw" placeholder="Buy BW Link" onChange={handleChange} value={form.buy_bw || ""} />
+      <h1 style={{ color: "gold" }}>Admin Dashboard</h1>
 
-      <textarea name="description" placeholder="Description" onChange={handleChange} value={form.description || ""} />
+      {/* FORM CARD */}
+      <div className="card">
+        <h3>{editingId ? "Edit Book" : "Add Book"}</h3>
 
-      {/* FILE UPLOADS */}
-      <p>Poster</p>
-      <input type="file" onChange={(e) => handleFile(e, "poster_url", "posters")} />
+        <input className="input" name="title" placeholder="Title" onChange={handleChange} value={form.title || ""} />
+        <input className="input" name="genre" placeholder="Genre" onChange={handleChange} value={form.genre || ""} />
+        <input className="input" name="trailer_url" placeholder="Trailer URL" onChange={handleChange} value={form.trailer_url || ""} />
+        <input className="input" name="buy_color" placeholder="Buy Color Link" onChange={handleChange} value={form.buy_color || ""} />
+        <input className="input" name="buy_bw" placeholder="Buy B&W Link" onChange={handleChange} value={form.buy_bw || ""} />
 
-      <p>Logo</p>
-      <input type="file" onChange={(e) => handleFile(e, "logo_url", "logos")} />
+        <textarea className="input" name="description" placeholder="Description" onChange={handleChange} value={form.description || ""} />
 
-      {/* CAST */}
-      <textarea
-        placeholder="Cast JSON"
-        onChange={(e) => {
-          try {
-            setForm({ ...form, cast: JSON.parse(e.target.value) })
-          } catch {
-            alert("Invalid JSON")
-          }
-        }}
-        value={JSON.stringify(form.cast || [])}
-      />
+        {/* POSTER */}
+        <p>Poster</p>
+        <input type="file" onChange={(e) => handleFile(e, "poster_url", "posters")} />
+        {(form.poster_url_preview || form.poster_url) && (
+          <img
+            src={form.poster_url_preview || form.poster_url}
+            className="preview"
+          />
+        )}
 
-      <button onClick={saveBook}>
-        {editingId ? "Update" : "Add"}
-      </button>
+        {/* LOGO */}
+        <p>Logo</p>
+        <input type="file" onChange={(e) => handleFile(e, "logo_url", "logos")} />
+        {(form.logo_url_preview || form.logo_url) && (
+          <img
+            src={form.logo_url_preview || form.logo_url}
+            className="preview"
+          />
+        )}
 
-      {/* LIST */}
+        {/* CAST */}
+        <textarea
+          className="input"
+          placeholder="Cast JSON"
+          onChange={(e) => {
+            try {
+              setForm({ ...form, cast: JSON.parse(e.target.value) })
+            } catch {
+              alert("Invalid JSON")
+            }
+          }}
+          value={JSON.stringify(form.cast || [])}
+        />
+
+        <button className="btn" onClick={saveBook}>
+          {editingId ? "Update Book" : "Add Book"}
+        </button>
+      </div>
+
+      {/* BOOK LIST */}
       {books.map((b) => (
-        <div key={b.id}>
+        <div key={b.id} className="card">
           <h3>{b.title}</h3>
-          <button onClick={() => editBook(b)}>Edit</button>
-          <button onClick={() => deleteBook(b.id)}>Delete</button>
+          <p style={{ color: "gold" }}>{b.genre}</p>
+
+          <div style={{ display: "flex", gap: 10 }}>
+            <img src={b.poster_url} className="preview" />
+            <img src={b.logo_url} className="preview" />
+          </div>
+
+          <button className="btn" onClick={() => editBook(b)}>
+            Edit
+          </button>
+
+          <button
+            className="btn"
+            style={{ background: "crimson" }}
+            onClick={() => deleteBook(b.id)}
+          >
+            Delete
+          </button>
         </div>
       ))}
     </div>
