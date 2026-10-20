@@ -1,1500 +1,2135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pavanntej – My Novels</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    :root {
-      --bg-main: #050509;
-      --bg-elevated: #111016;
-      --accent-red: #e50914;
-      --accent-red-soft: #b20710;
-      --text-main: #ffffff;
-      --text-muted: #b3b3b3;
-      --card-bg: #18181f;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, sans-serif;
-      background: radial-gradient(circle at top, #211016 0, #050509 55%);
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    /* Top nav */
-    .nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.9rem 4vw;
-      background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.9),
-        rgba(0, 0, 0, 0.4),
-        transparent
-      );
-      backdrop-filter: blur(12px);
-    }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 1.75rem;
-    }
-
-    .logo {
-      font-size: 1.6rem;
-      font-weight: 900;
-      letter-spacing: 0.15em;
-      color: var(--accent-red);
-      text-transform: uppercase;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 1rem;
-      font-size: 0.95rem;
-    }
-
-    .nav-links a {
-      color: var(--text-muted);
-      transition: color 0.2s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--text-main);
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      font-size: 0.9rem;
-    }
-
-    .nav-pill {
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 0.35rem 0.75rem;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .nav-profile {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #ff5f6d, #ffc371);
-    }
-
-    main {
-      margin-top: 4.5rem;
-    }
-
-    /* Hero / featured novel */
-    .hero {
-      position: relative;
-      min-height: 65vh;
-      padding: 4rem 6vw 3rem;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-      gap: 2.5rem;
-      align-items: center;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(
-          circle at 15% 10%,
-          rgba(229, 9, 20, 0.35),
-          transparent 60%
-        ),
-        radial-gradient(circle at 80% 0, rgba(165, 8, 24, 0.4), transparent 55%);
-      opacity: 0.9;
-      pointer-events: none;
-      z-index: -2;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: auto 0 0;
-      height: 12vh;
-      background: linear-gradient(to top, #050509, transparent);
-      z-index: -1;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 0.25rem 0.9rem;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-    }
-
-    .hero-badge-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #2ecc71;
-      box-shadow: 0 0 6px rgba(46, 204, 113, 0.8);
-    }
-
-    .hero-title {
-      font-size: clamp(2.5rem, 3.7vw, 3.6rem);
-      line-height: 1.1;
-      margin-bottom: 1rem;
-      letter-spacing: 0.04em;
-    }
-
-    .hero-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.7rem;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-    }
-
-    .hero-meta span {
-      padding: 0.15rem 0.5rem;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .hero-tagline {
-      font-size: 1.05rem;
-      color: #f5f5f5;
-      margin-bottom: 0.75rem;
-    }
-
-    .hero-desc {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      max-width: 36rem;
-      margin-bottom: 1.35rem;
-    }
-
-    .hero-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      margin-bottom: 0.85rem;
-    }
-
-    .btn {
-      border-radius: 999px;
-      padding: 0.65rem 1.4rem;
-      font-size: 0.95rem;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      transition: transform 0.18s ease, box-shadow 0.18s ease,
-        background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
-      letter-spacing: 0.03em;
-    }
-
-    .btn-primary {
-      background: var(--accent-red);
-      color: var(--text-main);
-      box-shadow: 0 12px 32px rgba(229, 9, 20, 0.5);
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-red-soft);
-      transform: translateY(-1px);
-      box-shadow: 0 16px 40px rgba(229, 9, 20, 0.65);
-    }
-
-    .btn-secondary {
-      background: rgba(0, 0, 0, 0.7);
-      color: var(--text-main);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.45);
-      transform: translateY(-1px);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .btn-ghost:hover {
-      color: var(--text-main);
-      background: rgba(255, 255, 255, 0.03);
-      border-color: rgba(255, 255, 255, 0.5);
-      transform: translateY(-1px);
-    }
-
-    .btn-icon {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 2px solid currentColor;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.65rem;
-    }
-
-    .hero-formats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      align-items: center;
-    }
-
-    .pill {
-      padding: 0.2rem 0.9rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(0, 0, 0, 0.5);
-    }
-
-    .hero-art-wrapper {
-      justify-self: end;
-      max-width: 360px;
-      width: 100%;
-    }
-
-    .hero-art {
-      position: relative;
-      border-radius: 1.4rem;
-      overflow: hidden;
-      background: radial-gradient(circle at top, #2d0b12, #050509 55%);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 26px 70px rgba(0, 0, 0, 0.9);
-      transform: translateY(0);
-      transition: transform 0.2s ease, box-shadow 0.2s ease,
-        border-color 0.2s ease;
-    }
-
-    .hero-art:hover {
-      transform: translateY(-4px);
-      border-color: rgba(229, 9, 20, 0.85);
-      box-shadow: 0 30px 85px rgba(229, 9, 20, 0.5);
-    }
-
-    .hero-art-gradient {
-      position: absolute;
-      inset: -12%;
-      background: radial-gradient(
-          circle at 20% 0%,
-          rgba(255, 255, 255, 0.05),
-          transparent 50%
-        ),
-        radial-gradient(circle at 80% 0%, rgba(229, 9, 20, 0.55), transparent 55%),
-        radial-gradient(circle at 30% 100%, rgba(59, 7, 19, 0.8), transparent 55%);
-      opacity: 0.95;
-      pointer-events: none;
-    }
-
-    .hero-art-content {
-      position: relative;
-      padding: 1.2rem 1.3rem 1.1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.7rem;
-    }
-
-    .hero-chip-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .hero-mini-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-top: 0.35rem;
-    }
-
-    .hero-mini-tagline {
-      font-size: 0.82rem;
-      color: #f0f0f0;
-      margin-bottom: 0.4rem;
-    }
-
-    .hero-mini-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .hero-mini-badges {
-      display: flex;
-      gap: 0.4rem;
-    }
-
-    .hero-mini-badge {
-      padding: 0.15rem 0.6rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: rgba(0, 0, 0, 0.55);
-    }
-
-    .hero-mini-actions {
-      margin-top: 0.7rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .hero-mini-actions-btns {
-      display: flex;
-      gap: 0.4rem;
-    }
-
-    .hero-mini-icon-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.7);
-      cursor: pointer;
-      transition: background 0.18s ease, transform 0.18s ease,
-        border-color 0.18s ease;
-    }
-
-    .hero-mini-icon-btn:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(255, 255, 255, 0.6);
-      transform: translateY(-1px);
-    }
-
-    .hero-spine {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .hero-spine::before {
-      content: "";
-      position: absolute;
-      left: 16%;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      border-radius: 999px;
-      background: linear-gradient(to bottom, #ff3b3b, #ffb347);
-      opacity: 0.7;
-      box-shadow: 0 0 12px rgba(255, 102, 102, 0.8);
-    }
-
-    .hero-spine::after {
-      content: "";
-      position: absolute;
-      inset: auto 0 0;
-      height: 10%;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
-    }
-
-    /* Rows / carousels */
-    .section {
-      padding: 0 4vw 0.5rem;
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 0.4rem;
-      padding: 0 0.2rem;
-    }
-
-    .section-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-
-    .section-sub {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .row {
-      position: relative;
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
-      scrollbar-width: none;
-    }
-
-    .row::-webkit-scrollbar {
-      display: none;
-    }
-
-    .card-strip {
-      display: flex;
-      gap: 0.8rem;
-      padding: 0.4rem 0.2rem 1.1rem;
-    }
-
-    .card {
-      min-width: 180px;
-      max-width: 180px;
-      background: linear-gradient(145deg, #1a1b24, #13131a);
-      border-radius: 0.9rem;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      transition: transform 0.2s ease, box-shadow 0.2s ease,
-        border-color 0.2s ease, background 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-6px) scale(1.03);
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.85);
-      border-color: rgba(229, 9, 20, 0.7);
-      background: linear-gradient(145deg, #23141f, #14131b);
-    }
-
-    .card-poster {
-      height: 230px;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-    }
-
-    .card-poster::after {
-      content: "";
-      position: absolute;
-      inset: auto 0 0;
-      height: 40%;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
-    }
-
-    .card-info {
-      position: absolute;
-      inset: auto 0 0;
-      padding: 0.55rem 0.75rem 0.6rem;
-      font-size: 0.78rem;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-    }
-
-    .card-title {
-      font-weight: 600;
-      letter-spacing: 0.03em;
-    }
-
-    .card-meta {
-      display: flex;
-      gap: 0.45rem;
-      color: var(--text-muted);
-      font-size: 0.7rem;
-    }
-
-    .card-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 0.75rem;
-      gap: 0.3rem;
-      background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.92),
-        rgba(0, 0, 0, 0.75),
-        transparent
-      );
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-
-    .card:hover .card-overlay {
-      opacity: 1;
-    }
-
-    .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-      font-size: 0.68rem;
-      color: var(--text-muted);
-    }
-
-    .card-tag {
-      padding: 0.15rem 0.45rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(0, 0, 0, 0.5);
-    }
-
-    .card-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 0.25rem;
-      font-size: 0.72rem;
-    }
-
-    .card-action-left {
-      display: flex;
-      gap: 0.3rem;
-    }
-
-    .card-small-btn {
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(0, 0, 0, 0.7);
-      padding: 0.15rem 0.55rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      font-size: 0.68rem;
-      cursor: pointer;
-      transition: background 0.18s ease, border-color 0.18s ease,
-        transform 0.18s ease;
-    }
-
-    .card-small-btn:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.55);
-      transform: translateY(-1px);
-    }
-
-    .card-buy-links {
-      display: flex;
-      gap: 0.3rem;
-      margin-top: 0.25rem;
-      font-size: 0.68rem;
-      flex-wrap: wrap;
-    }
-
-    .buy-pill {
-      padding: 0.15rem 0.55rem;
-      border-radius: 999px;
-      background: rgba(229, 9, 20, 0.2);
-      border: 1px solid rgba(229, 9, 20, 0.7);
-      color: #ffb3b3;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      transition: background 0.18s ease, transform 0.18s ease,
-        border-color 0.18s ease, color 0.18s ease;
-    }
-
-    .buy-pill:hover {
-      background: rgba(229, 9, 20, 0.35);
-      border-color: #ff4a4a;
-      color: #ffffff;
-      transform: translateY(-1px);
-    }
-
-    /* Trailer modal */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at top, rgba(0, 0, 0, 0.9), #000);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-    }
-
-    .modal-backdrop.show {
-      display: flex;
-    }
-
-    .modal-inner {
-      position: relative;
-      width: min(900px, 96vw);
-      background: #050509;
-      border-radius: 1.1rem;
-      padding: 0.75rem;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.25rem 0.4rem 0.45rem;
-    }
-
-    .modal-title {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .modal-close {
-      width: 30px;
-      height: 30px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.18s ease, transform 0.18s ease;
-    }
-
-    .modal-close:hover {
-      background: rgba(255, 255, 255, 0.08);
-      transform: translateY(-1px);
-    }
-
-    .modal-body {
-      border-radius: 0.9rem;
-      overflow: hidden;
-      background: #000;
-      margin-top: 0.4rem;
-    }
-
-    .modal-body iframe {
-      width: 100%;
-      height: min(60vh, 480px);
-      border: none;
-      display: block;
-    }
-
-    /* Footer */
-    footer {
-      padding: 2.5rem 4vw 3rem;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      background: radial-gradient(circle at bottom, #190910, #050509 55%);
-      margin-top: 1.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    footer a {
-      color: var(--text-muted);
-    }
-
-    footer a:hover {
-      color: var(--text-main);
-    }
-
-    footer .grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.7rem;
-      margin-top: 1.3rem;
-    }
-
-    footer .col {
-      min-width: 140px;
-    }
-
-    .footer-label {
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      font-size: 0.75rem;
-      margin-bottom: 0.4rem;
-      color: #777;
-    }
-
-    .footer-pill {
-      margin-top: 1rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      padding: 0.35rem 0.9rem;
-      background: rgba(0, 0, 0, 0.6);
-    }
-
-    /* Responsive tweaks */
-    @media (max-width: 960px) {
-      .hero {
-        grid-template-columns: minmax(0, 1fr);
-        padding-top: 5.3rem;
-      }
-      .hero-art-wrapper {
-        justify-self: flex-start;
-        max-width: 320px;
-        margin-top: 0.6rem;
-      }
-      .nav {
-        padding-inline: 4vw;
-      }
-      .nav-links {
-        display: none;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .hero {
-        padding-inline: 4vw;
-      }
-      .section {
-        padding-inline: 4vw;
-      }
-      .card {
-        min-width: 150px;
-        max-width: 150px;
-      }
-      footer .grid {
-        flex-direction: column;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookshelf | Pavan Teja</title>
+    <link rel="icon" href="./images/bs.png">
+    <meta name="description" content="Explore the cinematic universe of Pavan Teja, an independent multi-genre author redefining the reading experience with AI-generated art and full-scale book trailers.">
+    <meta name="keywords" content="Pavan Teja, author, multi-genre novels, sci-fi, romance, thrillers, AI generated art, cinematic book trailers, independent publisher">
+    <meta name="author" content="Pavan Teja">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pavanntej.github.io/pavann/">
+    <meta property="og:title" content="Bookshelf | Pavan Teja - Multi-Genre Author & Creator">
+    <meta property="og:description" content="Discover 7 original novels featuring AI-generated art and cinematic trailers. Step into the cinematic storytelling universe of independent author Pavan Teja.">
+    <meta property="og:image" content="./images/poster/haathiposter.png">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://pavanntej.github.io/pavann/">
+    <meta property="twitter:title" content="Bookshelf | Pavan Teja">
+    <meta property="twitter:description" content="Discover 7 original novels and 1 upcoming featuring AI-generated art and cinematic trailers. Step into the cinematic storytelling universe of independent author Pavan Teja.">
+    <meta property="twitter:image" content="./images/poster/haathiposter.png">
+    
+    <link rel="preload" as="image" href="./images/poster/haathiposter.png">
+    <link rel="preload" as="image" href="./images/logo/haathi.png">
+
+    <style>
+        /* --- CSS VARIABLES FOR THEME --- */
+        :root {
+            --charcoal-black: #0f0f0f;
+            --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7);
+            --text-light: #f1f1f1;
+            --vignette-color: #F4C2C2; 
+        }
+
+        /* --- GLOBAL STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            color: var(--text-light);
+            overflow-x: hidden;
+            background-color: var(--charcoal-black);
+            scroll-behavior: smooth; 
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.6) 50%, transparent 100%);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: #d4af37;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 15px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            min-width: 250px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            display: block;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: #d4af37;
+        }
+
+        .dropdown-item .book-title {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .dropdown-item .book-genre {
+            font-size: 12px;
+            opacity: 0.7;
+            display: block;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 0.22s ease-in-out;
+            z-index: 0;
+        }
+        
+        #hero-bg-current { opacity: 1; }
+        #hero-bg-next { opacity: 0; }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, var(--charcoal-black) 0%, transparent 25%),
+                        linear-gradient(to right, var(--vignette-color) 0%, transparent 60%);
+            z-index: 1;
+            transition: background 1s ease;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 60px;
+            padding-bottom: 120px;
+        }
+
+        .hero-left { max-width: 70%; }
+
+        .book-logo {
+            max-width: 300px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px; 
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s, background-color 0.3s, color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+
+        .btn-gold {
+            background: var(--gold-gradient);
+            color: #000;
+            border: 1px solid #af8f00;
+        }
+
+        .btn-dark {
+            background-color: rgba(20, 20, 20, 0.6);
+            color: white;
+            border: 1px solid #d4af37;
+        }
+
+        /* NEW: Quick Genre Tag */
+        .quick-genre-tag {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 8px 18px;
+            background: rgba(15, 15, 15, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 20px;
+            font-size: 14px;
+            letter-spacing: 1px;
+            color: #eee;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 1.5s ease;
+        }
+
+        .quick-genre-tag strong {
+            color: #d4af37;
+        }
+
+        .hero-right {
+            width: 300px;
+            aspect-ratio: 9 / 16;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            border: 2px solid #d4af37;
+            background: #000;
+        }
+
+        .hero-right iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* --- MORE INFO PANEL --- */
+        .more-info-panel {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            visibility: hidden;
+            transition: max-height 0.6s ease, opacity 0.5s ease, padding 0.6s ease;
+            margin-top: 0px;
+            background: rgba(5, 10, 21, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            border-left: 3px solid #d4af37;
+            max-width: 100%;
+        }
+
+        .more-info-panel.show {
+            max-height: 500px; 
+            opacity: 1;
+            visibility: visible;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .more-info-panel p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #eee;
+        }
+
+        .cast-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .cast-card {
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .cast-card:hover { transform: scale(1.1); }
+
+        .cast-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #d4af37;
+            margin-bottom: 5px;
+        }
+
+        .cast-card span {
+            display: block;
+            font-size: 12px;
+            color: #ddd;
+        }
+
+        /* --- BOOK CAROUSEL --- */
+        .carousel-section {
+            padding: 20px 50px 50px 50px;
+            position: relative;
+            z-index: 20;
+            margin-top: -20px; 
+        }
+
+        .carousel-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #d4af37;
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-arrow {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: absolute;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .nav-arrow:hover {
+            background: #d4af37;
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        .left-arrow { left: -20px; }
+        .right-arrow { right: -20px; }
+
+        .book-row {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 15px 15px 20px 15px; 
+            scrollbar-width: none; 
+            scroll-behavior: smooth;
+            width: 100%;
+        }
+        
+        .book-row::-webkit-scrollbar { display: none; }
+
+        .book-card {
+            min-width: 200px;
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .book-card.active {
+            border: 2px solid #d4af37;
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .book-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .book-card:hover:not(.active) {
+            transform: scale(1.08);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- AUTHOR & CONTACT SECTION --- */
+        .author-section {
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            position: relative;
+            z-index: 20;
+        }
+
+        .author-profile {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            max-width: 1000px;
+        }
+
+        .author-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #d4af37;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .author-info h2 {
+            color: #d4af37;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .author-info p {
+            color: #ddd;
+            line-height: 1.8;
+            text-align: justify
+        }
+
+        /* Social Bar below Author */
+        .contact-bar {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid #444;
+            border-radius: 30px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .contact-link:hover {
+            transform: translateY(-5px);
+            border-color: #d4af37;
+            color: #d4af37;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+            background: rgba(0,0,0,0.8);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: #000;
+            color: #666;
+            font-size: 14px;
+            position: relative;
+            z-index: 20;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 850px) {
+            .hero-content {
+                flex-direction: column;
+                margin-top: 100px;
+                text-align: center;
+                padding-bottom: 80px;
+            }
+            .hero-left {
+                max-width: 100%;
+                margin-bottom: 30px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .button-group, .cast-container { justify-content: center; }
+            .hero-right { width: 100%; max-width: 320px; }
+            
+            nav {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+                background: rgba(5, 5, 5, 0.95); 
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .dropdown-content {
+                right: auto;
+                left: 50%;
+                transform: translateX(-50%) translateY(10px);
+                margin-top: 10px;
+            }
+
+            .dropdown:hover .dropdown-content {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            .nav-arrow { display: none; }
+            .carousel-section { padding: 20px; }
+            
+            .author-profile {
+                flex-direction: column;
+                text-align: center;
+            }
+            .author-img { margin-bottom: 10px; }
+        }
+    
+
+        /* --- OTHER TRAILERS --- */
+        .other-trailers-section {
+            position: relative;
+            z-index: 20;
+            padding: 34px 50px 56px;
+            background: linear-gradient(180deg, #101010 0%, #080808 100%);
+            border-top: 1px solid rgba(212, 175, 55, 0.16);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+        }
+
+        .other-trailers-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+
+        .section-eyebrow {
+            margin-bottom: 7px;
+            color: #bfa65c;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2.2px;
+        }
+
+        .other-trailers-section .carousel-title {
+            margin-bottom: 0;
+            font-size: clamp(23px, 2.5vw, 30px);
+        }
+
+        .other-trailers-intro {
+            max-width: 360px;
+            color: #a9a9a9;
+            font-size: 13px;
+            line-height: 1.6;
+            text-align: right;
+        }
+
+        .other-trailers-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .trailer-card {
+            position: relative;
+            isolation: isolate;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: stretch;
+            min-width: 0;
+            aspect-ratio: 4 / 5;
+            padding: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            background: #151515;
+            color: #fff;
+            text-align: left;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .trailer-card::before {
+            content: "";
+            position: absolute;
+            z-index: -2;
+            inset: 0;
+            background-image: var(--trailer-image, radial-gradient(circle at 75% 20%, rgba(221, 171, 63, 0.32), transparent 38%), linear-gradient(145deg, #322518 0%, #151515 55%, #080808 100%));
+            background-size: cover;
+            background-position: center;
+            transform: scale(1.01);
+            transition: transform 0.45s ease;
+        }
+
+        .trailer-card::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.12) 32%, rgba(0, 0, 0, 0.88) 100%);
+        }
+
+        .trailer-card--2::before {
+            background-image: var(--trailer-image, radial-gradient(circle at 68% 20%, rgba(137, 193, 181, 0.4), transparent 38%), linear-gradient(145deg, #183a3a 0%, #17221f 58%, #080909 100%));
+        }
+
+        .trailer-card--3::before {
+            background-image: var(--trailer-image, radial-gradient(circle at 26% 25%, rgba(199, 133, 76, 0.38), transparent 38%), linear-gradient(145deg, #3c2517 0%, #211813 55%, #090807 100%));
+        }
+
+        .trailer-card--4::before {
+            background-image: var(--trailer-image, radial-gradient(circle at 75% 22%, rgba(153, 66, 66, 0.44), transparent 42%), linear-gradient(145deg, #351719 0%, #201112 56%, #080808 100%));
+        }
+
+        .trailer-card-topline {
+            display: inline-flex;
+            align-self: flex-start;
+            max-width: 100%;
+            padding: 6px 8px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 99px;
+            background: rgba(0, 0, 0, 0.38);
+            color: #f0e7ca;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            backdrop-filter: blur(8px);
+        }
+
+        .trailer-card-center {
+            display: grid;
+            place-items: center;
+            margin: auto 0;
+            padding: 12px 0;
+        }
+
+        .trailer-play {
+            display: grid;
+            place-items: center;
+            width: 54px;
+            height: 54px;
+            padding-left: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            background: rgba(8, 8, 8, 0.47);
+            color: white;
+            font-size: 17px;
+            box-shadow: 0 7px 25px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(8px);
+            transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+        }
+
+        .trailer-card-copy { display: block; }
+
+        .trailer-card-title {
+            display: block;
+            margin-bottom: 9px;
+            color: #fff;
+            font-size: clamp(15px, 1.5vw, 20px);
+            font-weight: 750;
+            line-height: 1.18;
+            letter-spacing: -0.25px;
+            text-wrap: balance;
+            overflow-wrap: anywhere;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
+        }
+
+        .trailer-card-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #dfc56e;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .trailer-card-cta::after { content: "↗"; font-size: 14px; }
+
+        .trailer-card:hover,
+        .trailer-card:focus-visible {
+            transform: translateY(-5px);
+            border-color: rgba(212, 175, 55, 0.78);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(212, 175, 55, 0.12);
+            outline: none;
+        }
+
+        .trailer-card:hover::before,
+        .trailer-card:focus-visible::before { transform: scale(1.07); }
+
+        .trailer-card:hover .trailer-play,
+        .trailer-card:focus-visible .trailer-play {
+            background: var(--gold-gradient);
+            color: #090909;
+            border-color: transparent;
+            transform: scale(1.06);
+        }
+
+        /* --- SHORTS POPUP PLAYER --- */
+        .trailer-modal {
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(0, 0, 0, 0.9);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.22s ease, visibility 0.22s ease;
+        }
+
+        .trailer-modal.is-open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .trailer-modal-dialog {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            max-width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.28);
+            border-radius: 18px;
+            background: linear-gradient(150deg, #171717 0%, #080808 100%);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.62);
+            transform: translateY(10px) scale(0.985);
+            transition: transform 0.22s ease;
+        }
+
+        .trailer-modal.is-open .trailer-modal-dialog { transform: translateY(0) scale(1); }
+
+        .trailer-modal-heading {
+            width: 100%;
+            padding: 5px 54px 2px 8px;
+            text-align: left;
+        }
+
+        .trailer-modal-label {
+            margin-bottom: 4px;
+            color: #c5a64a;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+        }
+
+        .trailer-modal-heading h3 {
+            color: #f5f1e7;
+            font-size: clamp(15px, 3.5vw, 18px);
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        .trailer-modal-close {
+            position: absolute;
+            z-index: 2;
+            top: 13px;
+            right: 13px;
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            font-size: 27px;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .trailer-modal-close:hover,
+        .trailer-modal-close:focus-visible {
+            background: var(--gold-gradient);
+            color: #111;
+            outline: 2px solid rgba(212, 175, 55, 0.45);
+            outline-offset: 2px;
+        }
+
+        .trailer-modal-player {
+            position: relative;
+            width: auto;
+            height: min(72dvh, 680px);
+            max-width: calc(100vw - 48px);
+            aspect-ratio: 9 / 16;
+            overflow: hidden;
+            border-radius: 11px;
+            background: #020202;
+        }
+
+        .trailer-modal-player iframe {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: #000;
+        }
+
+        .trailer-missing-video {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            height: 100%;
+            padding: 28px;
+            color: #d6d6d6;
+            text-align: center;
+            background: radial-gradient(circle at top, rgba(212, 175, 55, 0.15), transparent 46%), #101010;
+        }
+
+        .trailer-missing-video[hidden],
+        .trailer-modal-player iframe[hidden] { display: none; }
+
+        .missing-video-icon {
+            display: grid;
+            place-items: center;
+            width: 56px;
+            height: 56px;
+            padding-left: 3px;
+            border: 1px solid #c5a64a;
+            border-radius: 50%;
+            color: #e2cb81;
+            font-size: 18px;
+        }
+
+        .missing-video-title { color: #f4e8c2; font-size: 17px; font-weight: 700; }
+        .trailer-missing-video p:not(.missing-video-title) { color: #a8a8a8; font-size: 12px; line-height: 1.65; }
+        .trailer-missing-video code { color: #f1d982; overflow-wrap: anywhere; }
+        body.trailer-modal-open { overflow: hidden; }
+
+        /* --- RESPONSIVE REFINEMENTS --- */
+        html { scroll-behavior: smooth; scroll-padding-top: 112px; }
+        img, iframe { max-width: 100%; }
+        .nav-link, .btn, .contact-link, .trailer-card, .trailer-modal-close { -webkit-tap-highlight-color: transparent; }
+        :focus-visible { outline-color: #dfc56e; }
+
+        @media (max-width: 850px) {
+            nav {
+                padding: 12px 18px 10px;
+                gap: 9px;
+                background: rgba(5, 5, 5, 0.96);
+                border-bottom: 1px solid rgba(212, 175, 55, 0.16);
+            }
+
+            .logo { font-size: 24px; }
+
+            .nav-menu {
+                width: 100%;
+                max-width: 100%;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                gap: 22px;
+                overflow-x: auto;
+                padding: 0 2px 4px;
+                scrollbar-width: none;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .nav-menu::-webkit-scrollbar { display: none; }
+            .nav-link { white-space: nowrap; font-size: 13px; letter-spacing: 0.4px; }
+
+            .hero { min-height: auto; padding: 0; }
+            .hero-content {
+                width: 100%;
+                margin-top: 0;
+                padding: 142px 24px 52px;
+                gap: 26px;
+            }
+
+            .hero-left { width: 100%; max-width: 100%; margin-bottom: 0; }
+            .book-logo { width: min(72vw, 280px); max-height: 200px; object-fit: contain; }
+            .button-group { width: 100%; max-width: 520px; gap: 10px; }
+            .btn { min-height: 44px; padding: 12px 16px; font-size: 14px; }
+            .quick-genre-tag { max-width: 100%; line-height: 1.45; }
+            .more-info-panel { width: 100%; text-align: left; }
+            .hero-right { width: min(78vw, 300px); max-width: 300px; flex-shrink: 0; }
+
+            .carousel-section { padding: 24px 22px 40px; }
+            .book-row { gap: 15px; padding: 14px 5px 20px; scroll-snap-type: x mandatory; }
+            .book-card { min-width: clamp(150px, 28vw, 200px); height: auto; aspect-ratio: 2 / 3; scroll-snap-align: start; }
+            .book-card.active { transform: none; }
+
+            .other-trailers-section { padding: 32px 22px 44px; }
+            .other-trailers-heading { align-items: start; }
+            .other-trailers-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+            .trailer-card { aspect-ratio: 4 / 5; padding: 14px; }
+            .trailer-card-title { font-size: clamp(15px, 2.8vw, 19px); }
+
+            .author-section { padding: 42px 24px; }
+            .author-profile { width: 100%; max-width: 720px; gap: 24px; }
+            .author-info p { text-align: left; }
+            .contact-bar { width: 100%; max-width: 720px; gap: 12px; }
+            .contact-link { justify-content: center; flex: 1 1 150px; padding: 12px 18px; }
+        }
+
+        @media (max-width: 520px) {
+            html { scroll-padding-top: 118px; }
+            nav { padding: 10px 13px 8px; gap: 8px; }
+            .logo { font-size: 21px; letter-spacing: 1.5px; }
+            .nav-menu { gap: 18px; }
+            .nav-link { font-size: 12px; }
+
+            .hero-content { padding: 132px 15px 34px; gap: 22px; }
+            .book-logo { width: min(76vw, 250px); max-height: 175px; margin-bottom: 14px; }
+            .button-group { gap: 9px; margin-bottom: 11px; }
+            .btn { flex: 1 1 135px; padding: 11px 12px; font-size: 13px; }
+            .quick-genre-tag { padding: 7px 13px; font-size: 12px; letter-spacing: 0.4px; }
+            .hero-right { width: min(76vw, 270px); }
+            .more-info-panel.show { padding: 15px; margin-top: 14px; }
+            .cast-container { gap: 12px; }
+            .cast-card img { width: 52px; height: 52px; }
+
+            .carousel-section { padding: 22px 14px 31px; }
+            .carousel-title { font-size: clamp(21px, 5.8vw, 26px); }
+            .book-row { gap: 12px; padding: 12px 3px 17px; }
+            .book-card { min-width: 42vw; max-width: 190px; border-radius: 9px; }
+
+            .other-trailers-section { padding: 29px 14px 36px; }
+            .other-trailers-heading { display: block; margin-bottom: 16px; }
+            .section-eyebrow { font-size: 9px; letter-spacing: 1.5px; }
+            .other-trailers-intro { margin-top: 8px; text-align: left; font-size: 12px; }
+            .other-trailers-grid { gap: 11px; }
+            .trailer-card { padding: 11px; border-radius: 11px; aspect-ratio: 3 / 4; }
+            .trailer-card-topline { padding: 5px 6px; font-size: 7px; letter-spacing: 0.7px; }
+            .trailer-play { width: 44px; height: 44px; font-size: 15px; }
+            .trailer-card-title { margin-bottom: 7px; font-size: clamp(13px, 3.5vw, 15px); line-height: 1.2; }
+            .trailer-card-cta { font-size: 9px; }
+
+            .author-section { padding: 32px 16px; gap: 23px; }
+            .author-profile { gap: 16px; }
+            .author-img { width: 138px; height: 138px; margin-bottom: 2px; }
+            .author-info h2 { font-size: 24px; }
+            .author-info p { font-size: 14px; line-height: 1.75; }
+            .contact-bar { gap: 9px; margin-top: 5px; }
+            .contact-link { flex: 1 1 calc(50% - 9px); min-width: 0; gap: 7px; padding: 11px 9px; font-size: 12px; }
+            .contact-link svg { width: 18px; height: 18px; }
+            footer { padding: 24px 15px; font-size: 12px; }
+
+            .trailer-modal { padding: 10px; }
+            .trailer-modal-dialog { gap: 8px; padding: 8px; border-radius: 14px; }
+            .trailer-modal-heading { padding: 5px 48px 2px 5px; }
+            .trailer-modal-close { top: 10px; right: 10px; width: 38px; height: 38px; }
+            .trailer-modal-player { height: min(66dvh, 590px); max-width: calc(100vw - 36px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+        }
+
+
+
+        /* --- DEDICATED MOBILE APP EXPERIENCE (desktop styles remain untouched) --- */
+        .mobile-explore-link,
+        .mobile-featured-label,
+        .mobile-feature-actions,
+        .mobile-bottom-nav { display: none; }
+
+        @media (max-width: 850px) {
+            :root { color-scheme: dark; }
+            html { scroll-padding-top: 74px; scroll-padding-bottom: 92px; }
+            body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); background: #090909; } 
+
+            /* Compact app header */
+            nav:not(.mobile-bottom-nav) {
+                height: 62px;
+                min-height: 62px;
+                padding: 0 18px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                background: rgba(8, 8, 8, 0.92);
+                border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+                -webkit-backdrop-filter: blur(18px);
+                backdrop-filter: blur(18px);
+            }
+            .logo { font-size: 21px; letter-spacing: 1.35px; line-height: 1; }
+            .mobile-explore-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 9px 13px;
+                border: 1px solid rgba(212, 175, 55, 0.48);
+                border-radius: 999px;
+                color: #f4e6ba;
+                text-decoration: none;
+                font-size: 11px;
+                font-weight: 750;
+                letter-spacing: 0.65px;
+                text-transform: uppercase;
+                background: rgba(212, 175, 55, 0.08);
+            }
+            .mobile-explore-link span { color: #e8c95d; font-size: 15px; line-height: 0.8; }
+            nav:not(.mobile-bottom-nav) .nav-menu { display: none; }
+
+            /* Poster-led featured title: the page feels designed for a phone, not squeezed down */
+            .hero {
+                min-height: 560px;
+                display: block;
+                overflow: hidden;
+                padding: 0;
+                background: #0a0a0a;
+            }
+            .hero-bg {
+                top: 0;
+                bottom: auto;
+                height: 620px;
+                background-size: cover;
+                background-position: center 19%;
+                transform: translateZ(0);
+            }
+            .hero-overlay {
+                top: 0;
+                bottom: auto;
+                height: 690px;
+                background:
+                    linear-gradient(180deg, rgba(5,5,5,0.06) 0%, rgba(5,5,5,0.06) 22%, rgba(9,9,9,0.62) 54%, #090909 94%),
+                    linear-gradient(90deg, rgba(0,0,0,0.18), transparent 72%);
+            }
+            .hero-content {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: flex-start;
+                gap: 14px;
+                width: 100%;
+                min-height: 560px;
+                margin: 0;
+                padding: 93px 17px 28px;
+                position: relative;
+            }
+            .hero-left {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                text-align: left;
+            }
+            .mobile-featured-label {
+                display: inline-flex;
+                align-items: center;
+                align-self: flex-start;
+                gap: 7px;
+                margin: 0 0 7px 2px;
+                color: #f0d985;
+                font-size: 9px;
+                font-weight: 800;
+                letter-spacing: 2px;
+                text-shadow: 0 2px 10px #000;
+            }
+            .mobile-live-dot {
+                display: inline-block;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: #e6c45b;
+                box-shadow: 0 0 12px rgba(230,196,91,.65);
+            }
+            .book-logo {
+                display: block;
+                width: min(69vw, 245px);
+                max-width: 100%;
+                max-height: 136px;
+                object-fit: contain;
+                object-position: left center;
+                align-self: flex-start;
+                margin: 0 0 13px;
+                filter: drop-shadow(0 7px 20px rgba(0,0,0,.48));
+            }
+            .mobile-feature-actions { display: flex; width: 100%; margin: 0 0 11px; }
+            .mobile-watch-button {
+                width: 100%;
+                min-height: 48px;
+                justify-content: center;
+                gap: 10px;
+                border-radius: 13px;
+                font-size: 14px;
+                font-weight: 800;
+                box-shadow: 0 8px 25px rgba(191,149,63,.14);
+            }
+            .button-group {
+                display: flex;
+                width: 100%;
+                max-width: 100%;
+                justify-content: stretch;
+                gap: 9px;
+                margin-bottom: 9px;
+            }
+            .button-group .btn {
+                flex: 1 1 0;
+                min-width: 0;
+                min-height: 43px;
+                padding: 10px 9px;
+                border-radius: 12px;
+                justify-content: center;
+                align-items: center;
+                font-size: 12px;
+                font-weight: 750;
+                letter-spacing: .1px;
+            }
+            .button-group .btn-dark { background: rgba(18,18,18,.66); border-color: rgba(212,175,55,.55); }
+            .quick-genre-tag {
+                align-self: flex-start;
+                margin-top: 3px;
+                padding: 7px 11px;
+                border-radius: 8px;
+                border-color: rgba(212,175,55,.32);
+                background: rgba(8,8,8,.62);
+                font-size: 11px;
+                letter-spacing: .15px;
+                line-height: 1.35;
+            }
+            .more-info-panel,
+            .more-info-panel.show {
+                width: 100%;
+                max-width: 100%;
+                text-align: left;
+                border: 1px solid rgba(212,175,55,.28);
+                border-left: 2px solid #d4af37;
+                border-radius: 12px;
+                background: rgba(11,11,11,.9);
+                -webkit-backdrop-filter: blur(14px);
+                backdrop-filter: blur(14px);
+            }
+            .more-info-panel.show { padding: 15px; margin-top: 10px; }
+            .more-info-panel p { font-size: 13px; line-height: 1.65; }
+            .hero-right { display: none !important; }
+
+            /* Horizontal library shelf like a streaming app */
+            .carousel-section {
+                margin-top: 0;
+                padding: 23px 0 29px;
+                overflow: hidden;
+                background: linear-gradient(180deg, #090909 0%, #101010 100%);
+            }
+            .carousel-section > .carousel-title {
+                padding: 0 17px;
+                margin-bottom: 2px;
+                font-size: 21px;
+                letter-spacing: -.35px;
+            }
+            .carousel-wrapper { width: 100%; }
+            .nav-arrow { display: none !important; }
+            .book-row {
+                gap: 12px;
+                width: 100%;
+                padding: 13px 17px 17px;
+                scroll-padding-left: 17px;
+                scroll-snap-type: x mandatory;
+                overscroll-behavior-x: contain;
+            }
+            .book-card {
+                position: relative;
+                flex: 0 0 39vw;
+                min-width: 39vw;
+                max-width: 170px;
+                height: auto;
+                aspect-ratio: 2 / 3;
+                border: 1px solid rgba(255,255,255,.12);
+                border-radius: 12px;
+                scroll-snap-align: start;
+                box-shadow: 0 9px 24px rgba(0,0,0,.35);
+                transform: none !important;
+                isolation: isolate;
+            }
+            .book-card::after {
+                content: attr(data-title);
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                padding: 30px 9px 10px;
+                color: #fff;
+                font-size: 12px;
+                font-weight: 800;
+                line-height: 1.2;
+                text-align: left;
+                overflow-wrap: anywhere;
+                text-shadow: 0 2px 8px #000;
+                background: linear-gradient(180deg, transparent, rgba(0,0,0,.9));
+            }
+            .book-card.active {
+                border: 2px solid #d4af37;
+                box-shadow: 0 0 0 1px rgba(212,175,55,.18), 0 12px 27px rgba(0,0,0,.5);
+            }
+            .book-card:focus-visible { outline: 2px solid #e4c75f; outline-offset: 3px; }
+
+            /* Trailer tiles become touch-friendly, neatly rounded app cards */
+            .other-trailers-section {
+                padding: 27px 17px 32px;
+                background: #0d0d0d;
+                border-top: 1px solid rgba(255,255,255,.06);
+                border-bottom: 1px solid rgba(255,255,255,.06);
+            }
+            .other-trailers-heading { display: block; margin-bottom: 15px; }
+            .section-eyebrow { font-size: 9px; letter-spacing: 1.45px; margin-bottom: 7px; }
+            .other-trailers-section .carousel-title { font-size: 21px; letter-spacing: -.35px; }
+            .other-trailers-intro { margin-top: 7px; max-width: 100%; font-size: 12px; line-height: 1.55; text-align: left; }
+            .other-trailers-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+            .trailer-card { aspect-ratio: 3 / 4; min-height: 190px; padding: 11px; border-radius: 13px; }
+            .trailer-card-topline { font-size: 7px; letter-spacing: .55px; padding: 5px 6px; }
+            .trailer-play { width: 42px; height: 42px; font-size: 14px; }
+            .trailer-card-title { font-size: clamp(12px, 3.4vw, 15px); line-height: 1.2; margin-bottom: 7px; }
+            .trailer-card-cta { font-size: 9px; }
+
+            /* About card and contact actions match the same app visual language */
+            .author-section {
+                padding: 31px 17px 35px;
+                gap: 22px;
+                background: #090909;
+                border-top: 1px solid rgba(212,175,55,.18);
+            }
+            .author-profile {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                max-width: 520px;
+                align-items: flex-start;
+                gap: 14px;
+                padding: 19px;
+                border: 1px solid rgba(255,255,255,.1);
+                border-radius: 16px;
+                background: linear-gradient(145deg, rgba(28,28,28,.92), rgba(12,12,12,.92));
+            }
+            .author-img { width: 98px; height: 98px; margin: 0; }
+            .author-info h2 { margin-bottom: 8px; font-size: 21px; }
+            .author-info p { font-size: 13px; line-height: 1.7; text-align: left; color: #c6c6c6; }
+            .contact-bar { display: grid; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 0; }
+            .contact-link { min-width: 0; justify-content: flex-start; gap: 8px; padding: 12px 13px; border-radius: 12px; font-size: 12px; background: #151515; }
+            .contact-link svg { width: 18px; height: 18px; flex: 0 0 auto; }
+            footer { padding: 23px 15px 28px; font-size: 11px; background: #050505; }
+
+            /* Persistent app navigation with safe-area support */
+            .mobile-bottom-nav {
+                position: fixed;
+                /* Override the global nav { top: 0 } rule. Without this,
+                   top and bottom are both set and the bar covers the whole page. */
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: auto;
+                min-height: 0;
+                z-index: 950;
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 0;
+                padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+                border-top: 1px solid rgba(212,175,55,.2);
+                background: rgba(7,7,7,.94);
+                -webkit-backdrop-filter: blur(22px);
+                backdrop-filter: blur(22px);
+                box-shadow: 0 -10px 35px rgba(0,0,0,.4);
+            }
+            .mobile-nav-item {
+                display: flex;
+                min-height: 48px;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                color: #888;
+                text-decoration: none;
+                font-size: 9px;
+                font-weight: 700;
+                letter-spacing: .25px;
+                transition: color .18s ease, transform .18s ease;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .mobile-nav-item svg { width: 21px; height: 21px; fill: currentColor; }
+            .mobile-nav-item.is-active { color: #e3c55f; }
+            .mobile-nav-item.is-active svg { filter: drop-shadow(0 0 7px rgba(227,197,95,.25)); }
+            .mobile-nav-item:active { transform: scale(.96); }
+
+            /* Popups rise above the bottom app bar */
+            .trailer-modal { padding: 12px; }
+            .trailer-modal-dialog { gap: 9px; padding: 9px; border-radius: 16px; }
+            .trailer-modal-player { height: min(70dvh, 620px); max-width: calc(100vw - 34px); }
+        }
+
+        @media (max-width: 380px) {
+            .hero-content { padding-left: 14px; padding-right: 14px; }
+            .mobile-explore-link { padding: 8px 10px; font-size: 10px; }
+            .book-card { flex-basis: 42vw; min-width: 42vw; }
+            .other-trailers-section { padding-left: 14px; padding-right: 14px; }
+            .trailer-card { min-height: 170px; }
+            .button-group .btn { padding-left: 7px; padding-right: 7px; font-size: 11px; }
+        }
+
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://pavanntej.github.io/pavann/#author",
+      "name": "Pavan Teja",
+      "jobTitle": "Author, Independent Publisher, Filmmaker",
+      "description": "Independent multi-genre author redefining the reading experience with AI-generated art and full-scale cinematic book trailers.",
+      "url": "https://pavanntej.github.io/pavann/",
+      "image": "https://pavanntej.github.io/pavann/images/p.jpeg",
+      "sameAs": [
+        "https://instagram.com/pavanntej",
+        "https://youtube.com/@pavanntej"
+      ]
+    },
+    {
+      "@type": "Book",
+      "name": "Haathi",
+      "author": {"@id": "https://pavanntej.github.io/pavann/#author"},
+      "bookFormat": "https://schema.org/Paperback",
+      "genre": "Sci-Fi Thriller",
+      "description": "A self-made scientist’s experimental AI-powered prosthetic transforms an ordinary man into a superhuman savior—forcing him to confront the true cost of power, control, and what it means to be a hero."
+    },
+    {
+      "@type": "Book",
+      "name": "Index",
+      "author": {"@id": "https://pavanntej.github.io/pavann/#author"},
+      "url": "https://store.pothi.com/book/arasada-pavan-teja-miraz-0/",
+      "bookFormat": "https://schema.org/Paperback",
+      "genre": "Contemporary Romance",
+      "description": "A young man’s simple tea-stall encounter turns into a deep, complicated love story where devotion, misunderstandings, and fate challenge what it truly means to love someone selflessly and obsessively which makes them our Index."
+    },
+    {
+      "@type": "Book",
+      "name": "Miraz",
+      "author": {"@id": "https://pavanntej.github.io/pavann/#author"},
+      "url": "https://store.pothi.com/book/arasada-pavan-teja-miraz-2/",
+      "bookFormat": "https://schema.org/Paperback",
+      "genre": "Sci-Fi Horror/ Techno Thriller",
+      "description": "After an insecure surgeon named Vijay buys an AI mirror that displays a 'perfected' version of himself, he becomes entangled in a dark conspiracy involving the restless spirit and a global data-harvesting empire, ultimately teaming up with a hacker to expose the corrupt corporation responsible for her death"
+    },
+    {
+      "@type": "Book",
+      "name": "Naina",
+      "author": {"@id": "https://pavanntej.github.io/pavann/#author"},
+      "url": "https://store.pothi.com/book/arasada-pavan-teja-naina/",
+      "bookFormat": "https://schema.org/Paperback",
+      "genre": "Romantic Family Drama",
+      "description": "Naina is an emotional journey exploring love, loss, and destiny, where the lives of Ajju and Anju, separated by a past mistake at a railway station, are unexpectedly reunited years later through the innocent connection of a child named Naina"
+    },
+    {
+      "@type": "Book",
+      "name": "Vyshu",
+      "author": {"@id": "https://pavanntej.github.io/pavann/#author"},
+      "url": "https://store.pothi.com/book/arasada-pavan-teja-vyshu/",
+      "bookFormat": "https://schema.org/Paperback",
+      "genre": "Romantic Drama",
+      "description": "An orphan's obsessive love leads him to create a web series mirroring his real-life pursuit of an unreachable actress, blurring fiction and reality until a hidden truth nearly tears them apart"
+    },
+    {
+      "@type": "Book",
+      "name": "Anonymous",
+      "author": {"@id": "https://pavanntej.github.io/pavann/#author"},
+      "url": "https://store.pothi.com/book/arasada-pavan-teja-anonymous/",
+      "bookFormat": "https://schema.org/Paperback",
+      "genre": "Psychological thriller",
+      "description": "Anonymous is a story of love, loss, and the quiet courage it takes to rebuild after a tragic accident involving a childhood friend turned lover leaves a woman consumed by guilt and searching for redemption."
+    },
+    {
+      "@type": "Book",
+      "name": "Sungeetha",
+      "author": {"@id": "https://pavanntej.github.io/pavann/#author"},
+      "url": "https://store.pothi.com/book/arasada-pavan-teja-sungeetha-0/",
+      "bookFormat": "https://schema.org/Paperback",
+      "genre": "Romantic Tragedy",
+      "description": "A young man named Surya helps Sangeetha, a mysterious princess of an interior village named Konagudem confined to her home, experience the freedom of the outside world through a forbidden trek that ultimately leads to both liberation and tragedy."
+    },
+    {
+      "@type": "Book",
+      "name": "Daivam Manushya Roopena",
+      "author": {"@id": "https://pavanntej.github.io/pavann/#author"},
+      "url": "https://store.pothi.com/book/arasada-pavan-teja-daivan-manushya-roopena/",
+      "bookFormat": "https://schema.org/Paperback",
+      "genre": "Contemporary Romance",
+      "description": "When a sudden, brutal tragedy strikes just moments before their secret wedding, a quiet, introverted young man must sacrifice everything to fight against a cruel destiny and an apathetic society to rebuild the shattered love story of his life."
+    }
+  ]
+}
+</script>
 </head>
 <body>
-  <!-- Top nav -->
-  <header class="nav">
-    <div class="nav-left">
-      <div class="logo">PAVANNTEJ</div>
-      <nav class="nav-links">
-        <a href="#featured">Featured</a>
-        <a href="#sci-fi">Sci Fi Horror</a>
-        <a href="#tech-thr">Techno Thriller</a>
-        <a href="#rom-d">Romantic Drama</a>
-        <a href="#romance">Romance</a>
-      </nav>
+    
+    <nav>
+        <div class="logo">Bookshelf</div>
+        <a class="mobile-explore-link" href="#my-novels" aria-label="Explore novels">Explore <span aria-hidden="true">↓</span></a>
+        
+        <ul class="nav-menu">
+            <li class="nav-item dropdown">
+                <a href="#my-novels" class="nav-link">My Novels &#9662;</a>
+                <div class="dropdown-content" id="nav-books-dropdown">
+                    </div>
+            </li>
+            <li class="nav-item">
+                <a href="#other-trailers" class="nav-link">Other Trailers</a>
+            </li>
+            <li class="nav-item">
+                <a href="#about-section" class="nav-link">About Me</a>
+            </li>
+            <li class="nav-item">
+                <a href="#contact-section" class="nav-link">Get in Touch</a>
+            </li>
+        </ul>
+    </nav>
+
+    <header class="hero" id="hero-section">
+        <div id="hero-bg-current" class="hero-bg" style="background-image: url('./images/poster/haathiposter.png');"></div>
+        <div id="hero-bg-next" class="hero-bg"></div>
+
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            
+            <div class="hero-left">
+                <div class="mobile-featured-label"><span class="mobile-live-dot" aria-hidden="true"></span> FEATURED STORY</div>
+                <img id="hero-logo" src="./images/logo/haathi.png" alt="Book Logo" class="book-logo">
+                <div class="mobile-feature-actions">
+                    <button class="btn btn-gold mobile-watch-button" type="button" onclick="openFeaturedTrailer()">▶ <span>Watch Trailer</span></button>
+                </div>
+                
+                <div class="button-group">
+                    <a href="#" id="btn-color" class="btn btn-gold" target="_blank">Buy (Color)</a>
+                    <a href="#" id="btn-bw" class="btn btn-gold" target="_blank">Buy (B&W)</a>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-dark" onclick="toggleInfo()" aria-expanded="false" id="info-btn">ℹ More Info</button>
+                    <button class="btn btn-dark" onclick="shareBook()">➦ Share</button> 
+                </div>
+
+                <div class="quick-genre-tag">
+                    <strong>Genre:</strong> <span id="quick-genre-text">Genre</span>
+                </div>
+
+                <div class="more-info-panel" id="info-panel">
+                    <p id="hero-desc">Book Description goes here...</p>
+                    <strong style="color: #d4af37;">Characters / Cast:</strong>
+                    <div class="cast-container" id="hero-cast" style="margin-top: 10px;"></div>
+                </div>
+            </div>
+
+            <div class="hero-right" id="hero-right-container">
+                <iframe id="hero-trailer" src="" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="Book Trailer"></iframe>
+            </div>
+
+        </div>
+    </header>
+
+    <section class="carousel-section" id="my-novels">
+        <h2 class="carousel-title">My Novels</h2>
+        <div class="carousel-wrapper">
+            <button class="nav-arrow left-arrow" onclick="scrollCarousel(-1)">&#10094;</button>
+            <div class="book-row" id="book-row"></div>
+            <button class="nav-arrow right-arrow" onclick="scrollCarousel(1)">&#10095;</button>
+        </div>
+    </section>
+
+    <section class="other-trailers-section" id="other-trailers" aria-labelledby="other-trailers-title">
+        <div class="other-trailers-heading">
+            <div>
+                <p class="section-eyebrow">MORE FROM THE CINEMATIC UNIVERSE</p>
+                <h2 class="carousel-title" id="other-trailers-title">Other Trailers</h2>
+            </div>
+            <p class="other-trailers-intro">Short films, visual stories, and cinematic experiments.</p>
+        </div>
+        <div class="other-trailers-grid" id="other-trailers-grid"></div>
+    </section>
+
+    <div class="trailer-modal" id="trailer-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="trailer-modal-title">
+        <div class="trailer-modal-dialog">
+            <div class="trailer-modal-heading">
+                <div class="trailer-modal-label">NOW PLAYING</div>
+                <h3 id="trailer-modal-title">Trailer</h3>
+            </div>
+            <button class="trailer-modal-close" id="trailer-modal-close" type="button" aria-label="Close trailer">&times;</button>
+            <div class="trailer-modal-player">
+                <iframe id="other-trailer-iframe" title="Other trailer video" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen playsinline hidden></iframe>
+                <div class="trailer-missing-video" id="trailer-missing-video" hidden>
+                    <div class="missing-video-icon" aria-hidden="true">▶</div>
+                    <p class="missing-video-title">Video link not added yet</p>
+                    <p>The video link for this title has not been added yet. Please check back later.</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="nav-right">
-      <div class="nav-pill">
-        <span style="font-size: 0.8rem;">🌐</span>
-        <span>English</span>
-      </div>
-      <div class="nav-profile" title="Author profile"></div>
-    </div>
-  </header>
 
-  <main>
-    <!-- Hero / Featured novel -->
-    <section class="hero" id="featured">
-      <div>
-        <div class="hero-badge">
-          <span class="hero-badge-dot"></span>
-          <span>New release • Anonymous: Psychological Thriller</span>
-        </div>
-        <h1 class="hero-title">Anonymous</h1>
-        <div class="hero-meta">
-          <span>Psychological Thriller</span>
-          <span>Approx. 126 pages</span>
-          <span>Available in Colour &amp; B&amp;W</span>
-        </div>
-        <p class="hero-tagline">
-         “The hardest battle isn’t with the world… but with the guilt we carry inside.”
-        </p>
-        <p class="hero-desc">
-Anonymous is a story of love, loss, and the quiet courage it takes to rebuild when everything falls apart.
-Set between the serene green fields of Chodavaram and the restless pulse of Hyderabad, this novel follows Anu — a woman whose hands can create warmth, yet whose heart carries shadows she cannot escape.
-A childhood friendship returns through an anonymous message. Love blooms gently, almost unnoticed. But fate intervenes, and one night becomes a turning point that rewrites her life forever.
-This is not a story about perfect people. It is about people — broken, desperate, guilty — yet still searching for redemption.
-Anonymous asks a haunting question: “What does it mean to truly love when innocence is lost and forgiveness feels impossible?”
-Through pain, silence, and healing, this story reminds us that even when life breaks us, the heart still searches for home.
-Because sometimes the greatest enemy is not the world outside… but the one within...
-        </p>
-
-        <div class="hero-buttons">
-          <button class="btn btn-primary" data-trailer="https://www.youtube.com/shorts/fJq81CpxlOY">
-            <span class="btn-icon">▶</span>
-            <span>Play trailer</span>
-          </button>
-          <button class="btn btn-secondary" onclick="document.getElementById('sci-fi').scrollIntoView({behavior:'smooth'})">
-            <span>Browse all novels</span>
-          </button>
-          <button class="btn btn-ghost">
-            <span>+ Add to reading list</span>
-          </button>
-        </div>
-
-        <div class="hero-formats">
-          <span style="opacity: 0.7;">Book versions:</span>
-          <span class="pill">Hardcover – Colour edition</span>
-          <span class="pill">Paperback – Black &amp; white</span>
-          <span class="pill">Pothi</span>
-        </div>
-      </div>
-
-      <aside class="hero-art-wrapper">
-        <div class="hero-art">
-          <div class="hero-art-gradient"></div>
-          <div class="hero-art-content">
-            <div class="hero-chip-row">
-              <span>Featured novel</span>
+    <section class="author-section" id="about-section">
+        <div class="author-profile">
+            <img src="./images/p.jpeg" alt="Author" class="author-img" loading="lazy">
+            <div class="author-info">
+                <h2>About the Author</h2>
+                <p>Welcome to my cinematic world. I'm Pavan Teja, a multi-genre author and one-man creative studio bringing a decade of storytelling experience to life with the dream of filmmaking. I am redefining the traditional reading experience by merging it with cutting-edge technology, independently publishing paperback novels paired with breathtaking AI-generated art and full-scale, cinematic book trailers. Operating as a 100% independent creator, I single-handedly manage every aspect of my craft—from writing, editing, drafting, cover designing and publishing my novels across genres like Sci-Fi, Thriller, Horror, Tragedy and Romance, to producing all AI audio/visuals and building my custom website from scratch to showcase my portfolio. If you are passionate about original storytelling, indie filmmaking, and AI-powered creativity, you are exactly where you belong—subscribe to my social media handles to catch all my latest stories and trailers!</p>
             </div>
-            <div class="hero-mini-title">Anonymous</div>
-            <div class="hero-mini-tagline">“The hardest battle isn’t with the world… but with the guilt we carry inside.”</div>
-            <div class="hero-mini-meta">
-              <div class="hero-mini-badges">
-                <div class="hero-mini-badge">Dark</div>
-                <div class="hero-mini-badge">Contemporary Love</div>
-              </div>
-            </div>
-            <div class="hero-mini-actions">
-              <div class="hero-mini-actions-btns">
-                <button class="hero-mini-icon-btn" title="Play trailer"
-                  data-trailer="https://www.youtube.com/shorts/fJq81CpxlOY">
-                  ▶
-                </button>
-                <button class="hero-mini-icon-btn" title="More info"
-                  onclick="document.getElementById('epic-sagas').scrollIntoView({behavior:'smooth'})">
-                  ℹ
-                </button>
-              </div>
-              <span>Swipe down for more</span>
-            </div>
-          </div>
-          <div class="hero-spine"></div>
         </div>
-      </aside>
+
+        <div class="contact-bar" id="contact-section">
+            <a href="mailto:pavanntej@gmail.com" class="contact-link">
+                <svg viewBox="0 0 24 24"><path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z"/></svg>
+                Email
+            </a>
+            <a href="https://wa.me/919542648520" target="_blank" class="contact-link">
+                <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.05 20.17C10.55 20.17 9.12 19.76 7.9 19.04L7.63 18.88L4.51 19.7L5.34 16.65L5.16 16.37C4.38 15.11 3.96 13.56 3.96 11.92C3.96 7.46 7.6 3.83 12.06 3.83C14.22 3.83 16.22 4.67 17.75 6.2C19.27 7.73 20.12 9.73 20.12 11.92C20.12 16.38 16.5 20.17 12.05 20.17ZM16.52 14.07C16.27 13.95 15.06 13.36 14.84 13.27C14.61 13.2 14.45 13.15 14.29 13.4C14.13 13.64 13.68 14.16 13.53 14.33C13.39 14.5 13.24 14.52 13 14.4C12.75 14.28 11.96 14.02 11.03 13.19C10.3 12.54 9.8 11.73 9.66 11.48C9.51 11.23 9.64 11.12 9.77 11C9.88 10.89 10.02 10.71 10.15 10.56C10.27 10.41 10.32 10.3 10.4 10.12C10.48 9.94 10.44 9.78 10.38 9.66C10.32 9.53 9.83 8.33 9.62 7.84C9.42 7.37 9.22 7.43 9.07 7.43C8.93 7.43 8.77 7.42 8.61 7.42C8.45 7.42 8.19 7.48 7.97 7.72C7.75 7.96 7.12 8.54 7.12 9.73C7.12 10.91 8 12.05 8.12 12.22C8.24 12.38 9.83 14.83 12.28 15.89C12.86 16.14 13.32 16.29 13.68 16.41C14.27 16.59 14.8 16.57 15.22 16.5C15.69 16.42 16.71 15.88 16.93 15.27C17.15 14.67 17.15 14.15 17.08 14.04C17.01 13.93 16.85 13.86 16.6 13.73V14.07Z"/></svg>
+                WhatsApp
+            </a>
+            <a href="https://instagram.com/pavanntej" target="_blank" class="contact-link">
+                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                Instagram
+            </a>
+            <a href="https://youtube.com/playlist?list=PLEJn8UySgSR8&si=Uu3q1fh3HadtigFu" target="_blank" class="contact-link">
+                <svg viewBox="0 0 24 24"><path d="M21.582 6.186a2.656 2.656 0 00-1.87-1.885C18.062 3.86 12 3.86 12 3.86s-6.062 0-7.712.44A2.652 2.652 0 002.418 6.186C2 7.85 2 12 2 12s0 4.15.418 5.814a2.656 2.656 0 001.87 1.885c1.65.441 7.712.441 7.712.441s6.062 0 7.712-.441a2.652 2.652 0 001.87-1.885c.418-1.664.418-5.814.418-5.814s0-4.15-.418-5.814zM9.9 15.545V8.455L15.9 12l-6 3.545z"/></svg>
+                YouTube
+            </a>
+        </div>
     </section>
 
-    <!-- Row 1: SciFi Horror -->
-    <section class="section" id="sci-fi">
-      <div class="section-header">
-        <h2 class="section-title">SciFi Horror</h2>
-      </div>
-      <div class="row">
-        <div class="card-strip">
-          <!-- Card 1 -->
-          <article class="card" data-trailer="https://www.youtube.com/shorts/meM7mPIHqyk">
-            <div class="card-poster"
-              style="background-image: linear-gradient(135deg,#410816,#0b0d1b);">
-              <div class="card-info">
-                <div class="card-title">Miraz</div>
-                <div class="card-meta">
-                  <span>SciFi Horror</span>
-                  <span>Techno Thriller</span>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-tags">
-                  <span class="card-tag">AI Mirror</span>
-                  <span class="card-tag">A Ghost</span>
-                  <span class="card-tag">A Surgeon</span>
-                </div>
-                <div class="card-actions">
-                  <div class="card-action-left">
-                    <button class="card-small-btn" data-play>
-                      <span>▶</span>
-                      <span>Trailer</span>
-                    </button>
-                    <button class="card-small-btn" data-info>
-                      <span>ℹ</span>
-                      <span>Details</span>
-                    </button>
-                  </div>
-                  <span>110 Pages</span>
-                </div>
-                <div class="card-buy-links">
-                  <a class="buy-pill" href="https://store.pothi.com/book/arasada-pavan-teja-miraz-2/" target="_blank" rel="noopener">
-                    <span>Colour</span>
-                  </a>
-                  <a class="buy-pill" href="https://store.pothi.com/book/arasada-pavan-teja-miraz/" target="_blank" rel="noopener">
-                    <span>B&amp;W</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </article>        
-        </div>
-      </div>
-    </section>
+    <footer>
+        <p>&copy; 2026 | Pavan Teja | All rights reserved.</p>
+    </footer>
 
-    <!-- Row 2: Techno Thriller -->
-    <section class="section" id="tech-thr">
-      <div class="section-header">
-        <h2 class="section-title">Techno Thriller</h2>
-      </div>
-      <div class="row">
-        <div class="card-strip">
-          <!-- Card 1 -->
-          <article class="card" data-trailer="https://www.youtube.com/shorts/meM7mPIHqyk">
-            <div class="card-poster"
-              style="background-image: linear-gradient(135deg,#410816,#0b0d1b);">
-              <div class="card-info">
-                <div class="card-title">Miraz</div>
-                <div class="card-meta">
-                  <span>SciFi Horror</span>
-                  <span>Techno Thriller</span>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-tags">
-                  <span class="card-tag">AI Mirror</span>
-                  <span class="card-tag">A Ghost</span>
-                  <span class="card-tag">A Surgeon</span>
-                </div>
-                 <div class="card-buy-links">
-                  <a class="buy-pill" href="https://store.pothi.com/book/arasada-pavan-teja-miraz-2/" target="_blank" rel="noopener">
-                    <span>Colour</span>
-                  </a>
-                  <a class="buy-pill" href="https://store.pothi.com/book/arasada-pavan-teja-miraz/" target="_blank" rel="noopener">
-                    <span>B&amp;W</span>
-                  </a>
-                </div>
-                <div class="card-actions">
-                  <div class="card-action-left">
-                    <button class="card-small-btn" data-play>
-                      <span>▶</span>
-                      <span>Trailer</span>
-                    </button>
-                    <button class="card-small-btn" data-info>
-                      <span>ℹ</span>
-                      <span>Details</span>
-                    </button>
-                  </div>
-                  <span>110 Pages</span>
-                </div>
-              </div>
-            </div>
-          </article>
-           <!-- Card 2 -->
-          <article class="card" data-trailer="https://www.youtube.com/@pavanntej/shorts">
-            <div class="card-poster"
-              style="background-image: linear-gradient(135deg,#410816,#0b0d1b);">
-              <div class="card-info">
-                <div class="card-title">Haathi</div>
-                <div class="card-meta">
-                  <span>Sci Fi</span>
-                  <span>Techno Thriller</span>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-tags">
-                  <span class="card-tag">An AI Arm</span>
-                  <span class="card-tag">A Mad Scientist</span>
-                  <span class="card-tag">A Superhero</span>
-                </div>
-                <div class="card-actions">
-                <div class="card-buy-links">
-                  <a class="buy-pill" href="https://linktr.ee/pavanntej" target="_blank" rel="noopener">
-                    <span>Colour</span>
-                  </a>
-                  <a class="buy-pill" href="https://linktr.ee/pavanntej" target="_blank" rel="noopener">
-                    <span>B&amp;W</span>
-                  </a>
-                </div>
-                  <div class="card-action-left">
-                    <button class="card-small-btn" data-play>
-                      <span>▶</span>
-                      <span>Trailer</span>
-                    </button>
-                    <button class="card-small-btn" data-info>
-                      <span>ℹ</span>
-                      <span>Details</span>
-                    </button>
-                  </div>
-                  <span>~110 Pages</span>
-                </div>
-              </div>
-            </div>
-          </article>
-       
-        </div>
-      </div>
-    </section>
+    <nav class="mobile-bottom-nav" aria-label="Mobile app navigation">
+        <a href="#hero-section" class="mobile-nav-item is-active" data-mobile-target="hero-section" aria-label="Home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.1a1.1 1.1 0 0 1-1.1 1.1h-5.2v-6.1H9.3V21H4.1A1.1 1.1 0 0 1 3 19.9z"/></svg><span>Home</span>
+        </a>
+        <a href="#my-novels" class="mobile-nav-item" data-mobile-target="my-novels" aria-label="Books">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3.5h11.8A2.2 2.2 0 0 1 18 5.7V21H6.3A2.3 2.3 0 0 1 4 18.7zM7 6v12.5c0 .8.5 1.5 1.3 1.5H20v-2H8.4V6z"/><path d="M8.5 8.3h6.8M8.5 11.2h6.8"/></svg><span>Books</span>
+        </a>
+        <a href="#other-trailers" class="mobile-nav-item" data-mobile-target="other-trailers" aria-label="Trailers">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.8A1.8 1.8 0 0 0 3.2 5.6v12.8A1.8 1.8 0 0 0 5 20.2h14a1.8 1.8 0 0 0 1.8-1.8V5.6A1.8 1.8 0 0 0 19 3.8zM10 8l6.5 4-6.5 4z"/></svg><span>Trailers</span>
+        </a>
+        <a href="#about-section" class="mobile-nav-item" data-mobile-target="about-section" aria-label="About">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4M4 20.4a8 8 0 0 1 16 0z"/></svg><span>About</span>
+        </a>
+    </nav>
 
-    <!-- Row 2: Techno Thriller -->
-    <section class="section" id="tech-thr">
-      <div class="section-header">
-        <h2 class="section-title">Techno Thriller</h2>
-      </div>
-      <div class="row">
-        <div class="card-strip">
-          <!-- Card 1 -->
-          <article class="card" data-trailer="https://www.youtube.com/shorts/meM7mPIHqyk">
-            <div class="card-poster"
-              style="background-image: linear-gradient(135deg,#410816,#0b0d1b);">
-              <div class="card-info">
-                <div class="card-title">Miraz</div>
-                <div class="card-meta">
-                  <span>SciFi Horror</span>
-                  <span>Techno Thriller</span>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-tags">
-                  <span class="card-tag">AI Mirror</span>
-                  <span class="card-tag">A Ghost</span>
-                  <span class="card-tag">A Surgeon</span>
-                </div>
-                 <div class="card-buy-links">
-                  <a class="buy-pill" href="https://store.pothi.com/book/arasada-pavan-teja-miraz-2/" target="_blank" rel="noopener">
-                    <span>Colour</span>
-                  </a>
-                  <a class="buy-pill" href="https://store.pothi.com/book/arasada-pavan-teja-miraz/" target="_blank" rel="noopener">
-                    <span>B&amp;W</span>
-                  </a>
-                </div>
-                <div class="card-actions">
-                  <div class="card-action-left">
-                    <button class="card-small-btn" data-play>
-                      <span>▶</span>
-                      <span>Trailer</span>
-                    </button>
-                    <button class="card-small-btn" data-info>
-                      <span>ℹ</span>
-                      <span>Details</span>
-                    </button>
-                  </div>
-                  <span>110 Pages</span>
-                </div>
-              </div>
-            </div>
-          </article>
-           <!-- Card 2 -->
-          <article class="card" data-trailer="https://www.youtube.com/@pavanntej/shorts">
-            <div class="card-poster"
-              style="background-image: linear-gradient(135deg,#410816,#0b0d1b);">
-              <div class="card-info">
-                <div class="card-title">Haathi</div>
-                <div class="card-meta">
-                  <span>Sci Fi</span>
-                  <span>Techno Thriller</span>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-tags">
-                  <span class="card-tag">An AI Arm</span>
-                  <span class="card-tag">A Mad Scientist</span>
-                  <span class="card-tag">A Superhero</span>
-                </div>
-                <div class="card-actions">
-                <div class="card-buy-links">
-                  <a class="buy-pill" href="https://linktr.ee/pavanntej" target="_blank" rel="noopener">
-                    <span>Colour</span>
-                  </a>
-                  <a class="buy-pill" href="https://linktr.ee/pavanntej" target="_blank" rel="noopener">
-                    <span>B&amp;W</span>
-                  </a>
-                </div>
-                  <div class="card-action-left">
-                    <button class="card-small-btn" data-play>
-                      <span>▶</span>
-                      <span>Trailer</span>
-                    </button>
-                    <button class="card-small-btn" data-info>
-                      <span>ℹ</span>
-                      <span>Details</span>
-                    </button>
-                  </div>
-                  <span>~110 Pages</span>
-                </div>
-              </div>
-            </div>
-          </article>
-       
-        </div>
-      </div>
-    </section>
+    <script>
+        const books = [
+            {
+                id: 1,
+                title: "Index",
+                coverImg: "./images/card/indexfc.jpg",
+                bgImg: "./images/poster/index.jpg",
+                logoImg: "./images/logo/index.png",
+                vignetteColor: "#1a1510",
+                trailerId: "iuKvGftTKCU", 
+                buyColorLink: "https://store.pothi.com/book/arasada-pavan-teja-miraz-0/",
+                buyBwLink: "https://store.pothi.com/book/arasada-pavan-teja-index/",
+                desc: "A young man’s simple tea-stall encounter turns into a deep, complicated love story where devotion, misunderstandings, and fate challenge what it truly means to love someone selflessly and obsessively which makes them our Index.",
+                genre: "Contemporary Romance",
+                cast: [
+                    { name: "Ananthika Sanilkumar", img: "./images/cast/index/as.jpg" },
+                    { name: "Devaraj Rongali", img: "./images/cast/index/dr.jpg" },
+                    { name: "Ravitheja Duggirala", img: "./images/cast/index/rt.jpg" },
+                    { name: "Sameera Kishore", img: "./images/cast/Sameera Kishore.jpg" },
+                    { name: "Late Uday Kiran", img: "./images/cast/index/uk.jpg" },
+                    { name: "Late Chandra Mohan", img: "./images/cast/index/cm.jpg" },
+                    { name: "Late Ahuti Prasad", img: "./images/cast/index/ap.jpg" }
+                ]
+            },
+            {
+                id: 2,
+                title: "Naina",
+                coverImg: "./images/card/naina.jpg",
+                bgImg: "./images/poster/naina.png",
+                logoImg: "./images/logo/Naina.png",
+                vignetteColor: "#d3e2db",
+                trailerId: "26lIL6vax30", 
+                buyColorLink: "https://store.pothi.com/book/arasada-pavan-teja-naina/",
+                buyBwLink: "https://store.pothi.com/book/arasada-pavan-teja-naina-0/",
+                desc: "Naina is an emotional journey exploring love, loss, and destiny, where the lives of Ajju and Anju, separated by a past mistake at a railway station, are unexpectedly reunited years later through the innocent connection of a child named Naina",
+                genre: "Romantic Family Drama",
+                cast: [
+                    { name: "Srujana Sree MVS", img: "./images/cast/naina/srujana.jpg" },
+                    { name: "Garudapalli Sai Kumar", img: "./images/cast/naina/sai.jpg" },
+                    { name: "Naina (AI)", img: "./images/cast/naina/naina.jpg" },
+                    { name: "Sai Dhanyaa Pallath", img: "./images/cast/naina/dhanyaa.jpg" },
+                    { name: "Arasada Pavan Teja", img: "./images/cast/Pavan plaid.jpg" }
+                ]
+            },
+            {
+                id: 3,
+                title: "Miraz",
+                coverImg: "./images/card/miraz.jpg",
+                bgImg: "./images/poster/miraz.png",
+                logoImg: "./images/logo/miraz.png",
+                vignetteColor: "#0a192f",
+                trailerId: "meM7mPIHqyk", 
+                buyColorLink: "https://store.pothi.com/book/arasada-pavan-teja-miraz-2/",
+                buyBwLink: "https://store.pothi.com/book/arasada-pavan-teja-miraz/",
+                desc: "After an insecure surgeon named Vijay buys an AI mirror that displays a 'perfected' version of himself, he becomes entangled in a dark conspiracy involving the restless spirit and a global data-harvesting empire, ultimately teaming up with a hacker to expose the corrupt corporation responsible for her death",
+                genre: "Sci-Fi Horror/ Techno Thriller",
+                cast: [
+                    { name: "Vissa Subash Chandra", img: "./images/cast/miraz/sc.jpg" },
+                    { name: "Lahari Paricharla", img: "./images/cast/miraz/lp.jpg" },
+                    { name: "Seela Manikanta Sai", img: "./images/cast/miraz/sm.jpg" },
+                    { name: "Ravitheja Duggirala", img: "./images/cast/miraz/rt.jpg" },
+                    { name: "Late Kota Srinivas", img: "./images/cast/miraz/ks.jpg" }
+                ]
+             },
+            {
+                id: 4,
+                title: "Vyshu",
+                coverImg: "./images/card/vyshu.jpg",
+                bgImg: "./images/poster/vyshu.jpg",
+                logoImg: "./images/logo/vyshu.png",
+                vignetteColor: "#F4C2C2",
+                trailerId: "iuvg65sb7ng", 
+                buyColorLink: "https://store.pothi.com/book/arasada-pavan-teja-vyshu/",
+                buyBwLink: "https://store.pothi.com/book/arasada-pavan-teja-vyshu-2/",
+                desc: "An orphan's obsessive love leads him to create a web series mirroring his real-life pursuit of an unreachable actress, blurring fiction and reality until a hidden truth nearly tears them apart",
+                genre: "Romantic Drama",
+                cast: [
+                    { name: "Dwarakamai Vyshnavi", img: "./images/cast/vyshu/vyshu.jpg" },
+                    { name: "Arasada Pavan Teja", img: "./images/cast/Pavan plaid.jpg" },
+                    { name: "Sai Krishna Gadhasu", img: "./images/cast/Krishna.jpg" },
+                    { name: "Sameera Kishore", img: "./images/cast/Sameera Kishore.jpg" },
+                    { name: "Late Chandra Mohan", img: "./images/cast/index/cm.jpg" },
+                    { name: "Late Sri Hari", img: "./images/cast/Srihari.jpg" }
+                ]
+            },
+             {
+                id: 5,
+                title: "Anonymous",
+                coverImg: "./images/card/anonymous.jpg",
+                bgImg: "./images/poster/anonymous.png",
+                logoImg: "./images/logo/anonymous.png",
+                vignetteColor: "#2b0a0a",
+                trailerId: "I_fXJpENl3g", 
+                buyColorLink: "https://store.pothi.com/book/arasada-pavan-teja-anonymous/",
+                buyBwLink: "https://store.pothi.com/book/arasada-pavan-teja-anonymous-0/",
+                desc: "Anonymous is a story of love, loss, and the quiet courage it takes to rebuild after a tragic accident involving a childhood friend turned lover leaves a woman consumed by guilt and searching for redemption.",
+                genre: "Psychological thriller",
+                cast: [
+                    { name: "Sai Dhanyaa Pallath", img: "./images/cast/naina/dhanyaa.jpg" },
+                    { name: "Arasada Pavan Teja", img: "./images/cast/Pavan plaid.jpg" },
+                    { name: "Sameera Kishore", img: "./images/cast/Sameera Kishore.jpg" }
+                ]
+            },
+            {
+                id: 6,
+                title: "Sungeetha",
+                coverImg: "./images/card/sungeetha.jpg",
+                bgImg: "./images/poster/sungeetha.jpeg",
+                logoImg: "./images/logo/sungeetha.png",
+                vignetteColor: "#2e2111",
+                trailerId: "H0h-R1HfQx8", 
+                buyColorLink: "https://store.pothi.com/book/arasada-pavan-teja-sungeetha-0/",
+                buyBwLink: "https://store.pothi.com/book/arasada-pavan-teja-sungeetha/",
+                desc: "A young man named Surya helps Sangeetha, a mysterious princess of an interior village named Konagudem confined to her home, experience the freedom of the outside world through a forbidden trek that ultimately leads to both liberation and tragedy.",
+                genre: "Romantic Tragedy",
+                cast: [
+                    { name: "Smeha Manimegalai", img: "./images/cast/sungeetha/sg.jpg" },
+                    { name: "Syed Malik", img: "./images/cast/sungeetha/sm.jpg" },
+                    { name: "Late Sri Hari", img: "./images/cast/sungeetha/sh.jpg" },
+                    { name: "Karthick Kumar", img: "./images/cast/sungeetha/kk.jpg" }
+                ]
+            },
+            {
+                id: 7,
+                title: "Daivam Manushya Roopena",
+                coverImg: "./images/card/dmrc.jpg",
+                bgImg: "./images/poster/dmrls.png",
+                logoImg: "./images/logo/dmr.png",
+                vignetteColor: "#000000",
+                trailerId: "okT4T-sWu4M", 
+                buyColorLink: "https://store.pothi.com/book/arasada-pavan-teja-daivan-manushya-roopena/",
+                buyBwLink: "https://store.pothi.com/book/arasada-pavan-teja-daivam-manushya-roopena/",
+                desc: "When a sudden, brutal tragedy strikes just moments before their secret wedding, a quiet, introverted young man must sacrifice everything to fight against a cruel destiny and an apathetic society to rebuild the shattered love story of his life.",
+                genre: "Contemporary Romance",
+                cast: [
+                    { name: "Lakshmi Prasanna G", img: "./images/cast/dmr/roopa.png" },
+                    { name: "Sai Krishna Gadhasu", img: "./images/cast/dmr/krishna.png" },
+                    { name: "Ravi Teja Meduri", img: "./images/cast/dmr/rtm.png" },
+                    { name: "Sai Bhargav Yadav", img: "./images/cast/dmr/barghav.png" },
+                    { name: "Arasada Pavan Teja", img: "./images/p.jpeg" }
+                ]
+            },
+            {
+                id: 8,
+                title: "Haathi",
+                coverImg: "./images/card/haathic.png",
+                bgImg: "./images/poster/haathiposter.png",
+                logoImg: "./images/logo/haathi.png",
+                vignetteColor: "#0f172a", 
+                trailerId: "", 
+                buyColorLink: "", 
+                buyBwLink: "", 
+                desc: "A self-made scientist’s experimental AI-powered prosthetic transforms an ordinary man into a superhuman savior—forcing him to confront the true cost of power, control, and what it means to be a hero.",
+                genre: "Sci-Fi Thriller",
+                cast: []
+            }
+        ];
 
+        // OTHER TRAILERS: paste a YouTube Shorts URL or its 11-character video ID for each item.
+        // Hrudaya Samudram was identified from the public trailer listing; the other three IDs were not verifiable.
+        const otherTrailers = [
+            { title: "Hrudaya Samudram", youtubeId: "vHu4X3SXaqE" },
+            { title: "The Backpackers - Kasol To Heaven - Season 1", youtubeId: "" },
+            { title: "Athukula Gudise", youtubeId: "" },
+            { title: "Asala Dopidi", youtubeId: "" }
+        ];
 
-    <!-- Row 3: Romantic Drama -->
-    <section class="section" id="rom-d">
-      <div class="section-header">
-        <h2 class="section-title">Romance & Feel Good</h2>
-      </div>
-      <div class="row">
-        <div class="card-strip">
-          <!-- Card 1 -->
-          <article class="card" data-trailer="https://www.youtube.com/shorts/meM7mPIHqyk">
-            <div class="card-poster"
-              style="background-image: linear-gradient(135deg,#410816,#0b0d1b);">
-              <div class="card-info">
-                <div class="card-title">Miraz</div>
-                <div class="card-meta">
-                  <span>SciFi Horror</span>
-                  <span>Techno Thriller</span>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-tags">
-                  <span class="card-tag">AI Mirror</span>
-                  <span class="card-tag">A Ghost</span>
-                  <span class="card-tag">A Surgeon</span>
-                </div>
-                 <div class="card-buy-links">
-                  <a class="buy-pill" href="https://store.pothi.com/book/arasada-pavan-teja-miraz-2/" target="_blank" rel="noopener">
-                    <span>Colour</span>
-                  </a>
-                  <a class="buy-pill" href="https://store.pothi.com/book/arasada-pavan-teja-miraz/" target="_blank" rel="noopener">
-                    <span>B&amp;W</span>
-                  </a>
-                </div>
-                <div class="card-actions">
-                  <div class="card-action-left">
-                    <button class="card-small-btn" data-play>
-                      <span>▶</span>
-                      <span>Trailer</span>
-                    </button>
-                    <button class="card-small-btn" data-info>
-                      <span>ℹ</span>
-                      <span>Details</span>
-                    </button>
-                  </div>
-                  <span>110 Pages</span>
-                </div>
-              </div>
-            </div>
-          </article>
-           <!-- Card 2 -->
-          <article class="card" data-trailer="https://www.youtube.com/@pavanntej/shorts">
-            <div class="card-poster"
-              style="background-image: linear-gradient(135deg,#410816,#0b0d1b);">
-              <div class="card-info">
-                <div class="card-title">Haathi</div>
-                <div class="card-meta">
-                  <span>Sci Fi</span>
-                  <span>Techno Thriller</span>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-tags">
-                  <span class="card-tag">An AI Arm</span>
-                  <span class="card-tag">A Mad Scientist</span>
-                  <span class="card-tag">A Superhero</span>
-                </div>
-                <div class="card-actions">
-                <div class="card-buy-links">
-                  <a class="buy-pill" href="https://linktr.ee/pavanntej" target="_blank" rel="noopener">
-                    <span>Colour</span>
-                  </a>
-                  <a class="buy-pill" href="https://linktr.ee/pavanntej" target="_blank" rel="noopener">
-                    <span>B&amp;W</span>
-                  </a>
-                </div>
-                  <div class="card-action-left">
-                    <button class="card-small-btn" data-play>
-                      <span>▶</span>
-                      <span>Trailer</span>
-                    </button>
-                    <button class="card-small-btn" data-info>
-                      <span>ℹ</span>
-                      <span>Details</span>
-                    </button>
-                  </div>
-                  <span>~110 Pages</span>
-                </div>
-              </div>
-            </div>
-          </article>
-       
-        </div>
-      </div>
-    </section>
+        // 1. Determine Initial Book from URL (if it exists)
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookQuery = urlParams.get('book');
+        let initialIndex = 7; // Default to Haathi (Index 7)
+        if (bookQuery) {
+            const foundIndex = books.findIndex(b => b.title.toLowerCase() === bookQuery.toLowerCase());
+            if (foundIndex !== -1) {
+                initialIndex = foundIndex;
+            }
+        }
+        let currentFeaturedBook = books[initialIndex];
 
+        // 2. Populate Header Dropdown Menu
+        const dropdownContent = document.getElementById('nav-books-dropdown');
+        let dropdownHTML = '';
+        books.forEach((book, index) => {
+            dropdownHTML += `
+                <a class="dropdown-item" onclick="selectBookByIndex(${index})">
+                    <span class="book-title">${book.title}</span> 
+                    <span class="book-genre">| ${book.genre}</span>
+                </a>
+            `;
+        });
+        dropdownContent.innerHTML = dropdownHTML;
 
-    <!-- Row 2: Dark fantasy -->
-    <section class="section" id="dark-fantasy">
-      <div class="section-header">
-        <h2 class="section-title">Dark Fantasy Worlds</h2>
-        <p class="section-sub">For late-night reading sessions</p>
-      </div>
-      <div class="row">
-        <div class="card-strip">
-          <!-- Copy more cards as needed -->
-          <article class="card" data-trailer="https://player.vimeo.com/video/357274789">
-            <div class="card-poster"
-              style="background-image: linear-gradient(135deg,#2b0715,#050815);">
-              <div class="card-info">
-                <div class="card-title">The Library Beneath the Lake</div>
-                <div class="card-meta">
-                  <span>Gothic</span>
-                  <span>Standalone</span>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-tags">
-                  <span class="card-tag">Atmospheric</span>
-                  <span class="card-tag">Slow horror</span>
-                </div>
-                <div class="card-actions">
-                  <div class="card-action-left">
-                    <button class="card-small-btn" data-play>
-                      <span>▶</span>
-                      <span>Trailer</span>
-                    </button>
-                    <button class="card-small-btn" data-info>
-                      <span>ℹ</span>
-                      <span>Details</span>
-                    </button>
-                  </div>
-                  <span>~310 pages</span>
-                </div>
-                <div class="card-buy-links">
-                  <a class="buy-pill" href="https://amazon.in" target="_blank" rel="noopener">
-                    <span>Amazon</span>
-                    <span>Colour</span>
-                  </a>
-                  <a class="buy-pill" href="https://amazon.in" target="_blank" rel="noopener">
-                    <span>Amazon</span>
-                    <span>B&amp;W</span>
-                  </a>
-                  <a class="buy-pill" href="https://shopify.com" target="_blank" rel="noopener">
-                    <span>Shopify</span>
-                    <span>E-book</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </article>
+        // 3. Generate Carousel Cards
+        const bookRow = document.getElementById('book-row');
+        let currentActiveCard = null; 
 
-          <article class="card" data-trailer="https://www.youtube.com/embed/sBws8MSXN7A">
-            <div class="card-poster"
-              style="background-image: linear-gradient(135deg,#141325,#3b0c0c);">
-              <div class="card-info">
-                <div class="card-title">City of Paper Ghosts</div>
-                <div class="card-meta">
-                  <span>Urban horror</span>
-                  <span>Series</span>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-tags">
-                  <span class="card-tag">Short chapters</span>
-                  <span class="card-tag">Cliffhangers</span>
-                </div>
-                <div class="card-actions">
-                  <div class="card-action-left">
-                    <button class="card-small-btn" data-play>
-                      <span>▶</span>
-                      <span>Trailer</span>
-                    </button>
-                    <button class="card-small-btn" data-info>
-                      <span>ℹ</span>
-                      <span>Details</span>
-                    </button>
-                  </div>
-                  <span>~280 pages</span>
-                </div>
-                <div class="card-buy-links">
-                  <a class="buy-pill" href="https://amazon.in" target="_blank" rel="noopener">
-                    <span>Amazon</span>
-                    <span>Colour</span>
-                  </a>
-                  <a class="buy-pill" href="https://amazon.in" target="_blank" rel="noopener">
-                    <span>Amazon</span>
-                    <span>B&amp;W</span>
-                  </a>
-                  <a class="buy-pill" href="https://shopify.com" target="_blank" rel="noopener">
-                    <span>Shopify</span>
-                    <span>E-book</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </article>
+        books.forEach((book, index) => {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.dataset.title = book.title;
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('aria-label', `Feature ${book.title}`);
+            card.innerHTML = `<img src="${book.coverImg}" alt="${book.title}" loading="eager" decoding="async">`;
 
-        </div>
-      </div>
-    </section>
+            card.addEventListener('click', () => {
+                selectBookByIndex(index);
+            });
+            card.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    selectBookByIndex(index);
+                }
+            });
 
-    <!-- Row 3: Romance / feel-good -->
-    <section class="section" id="romance">
-      <div class="section-header">
-        <h2 class="section-title">Romance &amp; Feel‑Good</h2>
-        <p class="section-sub">Soft, cinematic love stories</p>
-      </div>
-      <div class="row">
-        <div class="card-strip">
-          <article class="card" data-trailer="https://player.vimeo.com/video/76979871">
-            <div class="card-poster"
-              style="background-image: linear-gradient(135deg,#30101e,#141f2e);">
-              <div class="card-info">
-                <div class="card-title">Midnight Chai at Platform 3</div>
-                <div class="card-meta">
-                  <span>Rom‑com</span>
-                  <span>Standalone</span>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-tags">
-                  <span class="card-tag">Train station</span>
-                  <span class="card-tag">Meet‑cute</span>
-                </div>
-                <div class="card-actions">
-                  <div class="card-action-left">
-                    <button class="card-small-btn" data-play>
-                      <span>▶</span>
-                      <span>Trailer</span>
-                    </button>
-                    <button class="card-small-btn" data-info>
-                      <span>ℹ</span>
-                      <span>Details</span>
-                    </button>
-                  </div>
-                  <span>~260 pages</span>
-                </div>
-                <div class="card-buy-links">
-                  <a class="buy-pill" href="https://amazon.in" target="_blank" rel="noopener">
-                    <span>Amazon</span>
-                    <span>Colour</span>
-                  </a>
-                  <a class="buy-pill" href="https://amazon.in" target="_blank" rel="noopener">
-                    <span>Amazon</span>
-                    <span>B&amp;W</span>
-                  </a>
-                  <a class="buy-pill" href="https://shopify.com" target="_blank" rel="noopener">
-                    <span>Shopify</span>
-                    <span>E-book</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </article>
+            bookRow.appendChild(card);
+            
+            // Highlight the initial card based on URL / default
+            if(index === initialIndex) {
+                card.classList.add('active');
+                currentActiveCard = card;
+            }
+        });
 
-          <article class="card" data-trailer="https://www.youtube.com/embed/oHg5SJYRHA0">
-            <div class="card-poster"
-              style="background-image: linear-gradient(135deg,#2a172c,#142a2d);">
-              <div class="card-info">
-                <div class="card-title">Letters We Never Sent</div>
-                <div class="card-meta">
-                  <span>Emotional</span>
-                  <span>Standalone</span>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-tags">
-                  <span class="card-tag">Epistolary</span>
-                  <span class="card-tag">Slow romance</span>
-                </div>
-                <div class="card-actions">
-                  <div class="card-action-left">
-                    <button class="card-small-btn" data-play>
-                      <span>▶</span>
-                      <span>Trailer</span>
-                    </button>
-                    <button class="card-small-btn" data-info>
-                      <span>ℹ</span>
-                      <span>Details</span>
-                    </button>
-                  </div>
-                  <span>~310 pages</span>
-                </div>
-                <div class="card-buy-links">
-                  <a class="buy-pill" href="https://amazon.in" target="_blank" rel="noopener">
-                    <span>Amazon</span>
-                    <span>Colour</span>
-                  </a>
-                  <a class="buy-pill" href="https://amazon.in" target="_blank" rel="noopener">
-                    <span>Amazon</span>
-                    <span>B&amp;W</span>
-                  </a>
-                  <a class="buy-pill" href="https://shopify.com" target="_blank" rel="noopener">
-                    <span>Shopify</span>
-                    <span>E-book</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </article>
+        // Function triggered by clicking dropdown or carousel card
+        function selectBookByIndex(index) {
+            const book = books[index];
+            const cards = document.querySelectorAll('.book-card');
+            
+            // Highlight active card
+            if (currentActiveCard) currentActiveCard.classList.remove('active');
+            if (cards[index]) {
+                cards[index].classList.add('active');
+                currentActiveCard = cards[index];
+            }
 
-        </div>
-      </div>
-    </section>
-  </main>
+            updateHeroSection(book);
+        }
 
-  <!-- Trailer modal -->
-  <div class="modal-backdrop" id="trailer-modal">
-    <div class="modal-inner">
-      <div class="modal-header">
-        <div class="modal-title">Trailer</div>
-        <button class="modal-close" id="trailer-close" aria-label="Close trailer">
-          ✕
-        </button>
-      </div>
-      <div class="modal-body">
-        <iframe id="trailer-frame"
-          src=""
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
+        function updateHeroSection(book) {
+            // Update Vignette Color
+            document.documentElement.style.setProperty('--vignette-color', book.vignetteColor);
+            
+            // Scroll to the top of the page
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  <script>
-    const modal = document.getElementById("trailer-modal");
-    const frame = document.getElementById("trailer-frame");
-    const closeBtn = document.getElementById("trailer-close");
+            const bgCurrent = document.getElementById('hero-bg-current');
+            const bgNext = document.getElementById('hero-bg-next');
+            const heroLogo = document.getElementById('hero-logo');
 
-    function openTrailer(url) {
-      if (!url) return;
-      frame.src = url + (url.includes("?") ? "&" : "?") + "autoplay=1";
-      modal.classList.add("show");
-    }
+            // Switch the hero immediately. Images are warmed by the shared preloader below;
+            // if an image is still downloading, the browser paints it as soon as it arrives.
+            bgNext.style.backgroundImage = `url("${book.bgImg}")`;
+            bgNext.style.opacity = '1';
+            heroLogo.src = book.logoImg;
+            heroLogo.alt = `${book.title} logo`;
 
-    function closeTrailer() {
-      modal.classList.remove("show");
-      frame.src = "";
-    }
+            // Keep rapid taps from leaving an older transition queued behind a newer choice.
+            if (window.heroFadeTimer) clearTimeout(window.heroFadeTimer);
+            window.heroFadeTimer = setTimeout(() => {
+                bgCurrent.style.backgroundImage = `url("${book.bgImg}")`;
+                bgNext.style.opacity = '0';
+            }, 220);
+            
+            // Remember the selected title. On phones, load the trailer only after a tap to save data.
+            currentFeaturedBook = book;
+            const trailerIframe = document.getElementById('hero-trailer');
+            const heroRightContainer = document.getElementById('hero-right-container');
+            const isMobileLayout = window.matchMedia('(max-width: 850px)').matches;
+            if (book.trailerId && !isMobileLayout) {
+                heroRightContainer.style.display = 'block';
+                trailerIframe.src = `https://www.youtube.com/embed/${book.trailerId}?autoplay=1&mute=0&loop=1`;
+            } else {
+                heroRightContainer.style.display = 'none';
+                trailerIframe.src = '';
+            }
 
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-trailer]") || e.target.closest("[data-play]")?.closest(".card");
-      if (btn && btn.dataset.trailer) {
-        openTrailer(btn.dataset.trailer);
-      }
-    });
+            // Handle missing buy buttons gracefully
+            const btnColor = document.getElementById('btn-color');
+            const btnBw = document.getElementById('btn-bw');
+            
+            if (book.buyColorLink) {
+                btnColor.style.display = 'flex';
+                btnColor.href = book.buyColorLink;
+            } else {
+                btnColor.style.display = 'none';
+            }
 
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) closeTrailer();
-    });
+            if (book.buyBwLink) {
+                btnBw.style.display = 'flex';
+                btnBw.href = book.buyBwLink;
+            } else {
+                btnBw.style.display = 'none';
+            }
 
-    closeBtn.addEventListener("click", closeTrailer);
+            document.getElementById('hero-desc').innerText = book.desc;
+            
+            // Update Quick Genre Tag
+            document.getElementById('quick-genre-text').innerText = book.genre;
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && modal.classList.contains("show")) {
-        closeTrailer();
-      }
-    });
-  </script>
+            // Populate Cast
+            const castContainer = document.getElementById('hero-cast');
+            let castHTML = ''; 
+            book.cast.forEach(person => {
+                castHTML += `
+                    <div class="cast-card">
+                        <img src="${person.img}" alt="${person.name}" loading="lazy">
+                        <span>${person.name}</span>
+                    </div>
+                `;
+            });
+            castContainer.innerHTML = castHTML; 
+
+            // Update the URL in the browser (without reloading the page!)
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?book=' + encodeURIComponent(book.title.toLowerCase());
+            window.history.replaceState({path: newUrl}, '', newUrl);
+            
+            // Store it globally for the Share button to use
+            window.currentBookShareUrl = newUrl;
+        }
+
+        function toggleInfo() {
+            const panel = document.getElementById('info-panel');
+            const btn = document.getElementById('info-btn');
+            panel.classList.toggle('show');
+            btn.setAttribute('aria-expanded', panel.classList.contains('show') ? 'true' : 'false');
+        }
+
+        function scrollCarousel(direction) {
+            const scrollAmount = 300; 
+            bookRow.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
+
+        function extractYouTubeVideoId(value) {
+            if (!value || typeof value !== 'string') return '';
+            const candidate = value.trim();
+            if (/^[A-Za-z0-9_-]{11}$/.test(candidate)) return candidate;
+            try {
+                const url = new URL(candidate);
+                const host = url.hostname.replace(/^www\./, '').toLowerCase();
+                let id = '';
+                if (host === 'youtu.be') {
+                    id = url.pathname.split('/').filter(Boolean)[0] || '';
+                } else if (host.endsWith('youtube.com') || host.endsWith('youtube-nocookie.com')) {
+                    const parts = url.pathname.split('/').filter(Boolean);
+                    if (url.pathname === '/watch') id = url.searchParams.get('v') || '';
+                    else if (['shorts', 'embed', 'live', 'v'].includes(parts[0])) id = parts[1] || '';
+                }
+                return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : '';
+            } catch (_) {
+                return '';
+            }
+        }
+
+        function renderOtherTrailers() {
+            const grid = document.getElementById('other-trailers-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            otherTrailers.forEach((trailer, index) => {
+                const videoId = extractYouTubeVideoId(trailer.youtubeId);
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = `trailer-card trailer-card--${index + 1}`;
+                card.setAttribute('aria-label', `Play ${trailer.title}`);
+                card.setAttribute('aria-haspopup', 'dialog');
+                if (videoId) {
+                    card.style.setProperty('--trailer-image', `url("https://img.youtube.com/vi/${videoId}/hqdefault.jpg")`);
+                }
+                card.innerHTML = `
+                    <span class="trailer-card-topline">SHORT FILM · TRAILER</span>
+                    <span class="trailer-card-center"><span class="trailer-play" aria-hidden="true">▶</span></span>
+                    <span class="trailer-card-copy">
+                        <span class="trailer-card-title"></span>
+                        <span class="trailer-card-cta">Watch Short</span>
+                    </span>`;
+                card.querySelector('.trailer-card-title').textContent = trailer.title;
+                card.addEventListener('click', () => openOtherTrailer(trailer));
+                grid.appendChild(card);
+            });
+        }
+
+        function openOtherTrailer(trailer) {
+            const modal = document.getElementById('trailer-modal');
+            const title = document.getElementById('trailer-modal-title');
+            const iframe = document.getElementById('other-trailer-iframe');
+            const missing = document.getElementById('trailer-missing-video');
+            const videoId = extractYouTubeVideoId(trailer.youtubeId);
+
+            title.textContent = trailer.title;
+            iframe.src = '';
+            iframe.hidden = true;
+            missing.hidden = true;
+
+            if (videoId) {
+                iframe.title = `${trailer.title} YouTube Short`;
+                iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&playsinline=1&rel=0&modestbranding=1`;
+                iframe.hidden = false;
+            } else {
+                missing.hidden = false;
+            }
+
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('trailer-modal-open');
+            document.getElementById('trailer-modal-close').focus({ preventScroll: true });
+        }
+
+        function openFeaturedTrailer() {
+            const book = currentFeaturedBook;
+            if (!book) return;
+            openOtherTrailer({ title: `${book.title} — Trailer`, youtubeId: book.trailerId || '' });
+        }
+
+        function closeOtherTrailer() {
+            const modal = document.getElementById('trailer-modal');
+            const iframe = document.getElementById('other-trailer-iframe');
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('trailer-modal-open');
+            // Removing the iframe URL stops playback immediately when the popup closes.
+            iframe.src = '';
+            iframe.hidden = true;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderOtherTrailers();
+            const modal = document.getElementById('trailer-modal');
+            const closeButton = document.getElementById('trailer-modal-close');
+            closeButton.addEventListener('click', closeOtherTrailer);
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) closeOtherTrailer();
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && modal.classList.contains('is-open')) closeOtherTrailer();
+            });
+
+            const mobileNavItems = Array.from(document.querySelectorAll('.mobile-nav-item'));
+            const setActiveMobileNav = (targetId) => {
+                mobileNavItems.forEach((navItem) => {
+                    navItem.classList.toggle('is-active', navItem.dataset.mobileTarget === targetId);
+                });
+            };
+            mobileNavItems.forEach((item) => {
+                item.addEventListener('click', () => setActiveMobileNav(item.dataset.mobileTarget));
+            });
+            if ('IntersectionObserver' in window) {
+                const mobileSectionObserver = new IntersectionObserver((entries) => {
+                    const visibleSections = entries
+                        .filter((entry) => entry.isIntersecting)
+                        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+                    if (visibleSections[0]) setActiveMobileNav(visibleSections[0].target.id);
+                }, { rootMargin: '-18% 0px -58% 0px', threshold: [0, 0.1, 0.25, 0.5] });
+                mobileNavItems.forEach((item) => {
+                    const target = document.getElementById(item.dataset.mobileTarget);
+                    if (target) mobileSectionObserver.observe(target);
+                });
+            }
+        });
+
+        function shareBook() {
+            // Copy the specific book URL we saved in the variable. Fall back gracefully on older mobile browsers.
+            const shareUrl = window.currentBookShareUrl || window.location.href;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(shareUrl)
+                    .then(() => alert("Website link copied to clipboard!"))
+                    .catch(() => window.prompt("Copy this website link:", shareUrl));
+            } else {
+                window.prompt("Copy this website link:", shareUrl);
+            }
+        }
+
+        // --- SMART ASSET WARM-UP ---
+        // Load the selected novel first, then warm every cover, logo and poster/background
+        // with a small concurrency limit. This avoids dozens of simultaneous requests on mobile.
+        const warmedImages = new Map();
+        function warmImage(src, priority = 'low') {
+            if (!src) return Promise.resolve(null);
+            if (warmedImages.has(src)) return warmedImages.get(src);
+            const promise = new Promise(resolve => {
+                const img = new Image();
+                img.decoding = 'async';
+                if ('fetchPriority' in img) img.fetchPriority = priority;
+                img.onload = () => {
+                    if (img.decode) img.decode().catch(() => {}).finally(() => resolve(img));
+                    else resolve(img);
+                };
+                img.onerror = () => resolve(null); // Keep the site usable if an optional asset is missing.
+                img.src = src;
+                if (img.complete && img.naturalWidth) resolve(img);
+            });
+            warmedImages.set(src, promise);
+            return promise;
+        }
+
+        async function warmBookAssets(book, priority = 'low') {
+            // Poster first because it fills the hero; logo and tile cover follow.
+            await warmImage(book.bgImg, priority);
+            await Promise.all([warmImage(book.logoImg, priority), warmImage(book.coverImg, priority)]);
+        }
+
+        function startAssetWarmup() {
+            const selected = books[initialIndex];
+            // Ensure the first screen's three key images are requested at high priority.
+            warmImage(selected.bgImg, 'high');
+            warmImage(selected.logoImg, 'high');
+            warmImage(selected.coverImg, 'high');
+
+            const remaining = books.filter(book => book !== selected);
+            let cursor = 0;
+            // Two workers on mobile, three on desktop: better balance between fast first paint
+            // and keeping every novel ready for near-instant tile selection.
+            const workerCount = window.matchMedia('(max-width: 850px)').matches ? 2 : 3;
+            const worker = async () => {
+                while (cursor < remaining.length) {
+                    const book = remaining[cursor++];
+                    await warmBookAssets(book, 'low');
+                }
+            };
+            Promise.all(Array.from({ length: workerCount }, worker));
+        }
+
+        // Start by loading the book matched from the URL (or Haathi by default).
+        updateHeroSection(books[initialIndex]);
+        if ('requestIdleCallback' in window) {
+            window.addEventListener('load', () => requestIdleCallback(startAssetWarmup, { timeout: 1200 }), { once: true });
+        } else {
+            window.addEventListener('load', () => setTimeout(startAssetWarmup, 250), { once: true });
+        }
+
+    </script>
 </body>
 </html>
